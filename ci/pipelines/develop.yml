@@ -22,10 +22,13 @@ resources:
   source:
     uri: https://github.com/smgoller/geode.git
     branch: add_concourse
+    ignore_paths:
+    - ci/*
 
 jobs:
 - name: Build
   serial: true
+  public: true
   plan:
     - get: geode
       trigger: true
