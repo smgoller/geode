@@ -19,7 +19,7 @@
 
 
 set -e
-
+echo "We should send an email to ${TOOLSMITHS_EMAIL_ADDRESS}, should we not?"
 pushd geode
 ./gradlew --no-daemon build
 popd
