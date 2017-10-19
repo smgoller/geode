@@ -22,8 +22,8 @@ set -e
 
 GEODE_BUILD_VERSION=geode-build-version/number
 
-if [ ! -e "${GEMFIRE_BUILD_VERSION}" ]; then
-  echo "${GEMFIRE_BUILD_VERSION} file does not exist. Concourse is probably not configured correctly."
+if [ ! -e "${GEODE_BUILD_VERSION}" ]; then
+  echo "${GEODE_BUILD_VERSION} file does not exist. Concourse is probably not configured correctly."
   exit 1
 fi
 if [ -z ${MAINTENANCE_VERSION+x} ]; then
