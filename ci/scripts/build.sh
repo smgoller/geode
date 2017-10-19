@@ -19,7 +19,38 @@
 
 
 set -e
-echo "We should send an email to ${TOOLSMITHS_EMAIL_ADDRESS}, should we not?"
+
+GEODE_BUILD_VERSION=geode-build-version/number
+
+if [ ! -e "${GEMFIRE_BUILD_VERSION}" ]; then
+  echo "${GEMFIRE_BUILD_VERSION} file does not exist. Concourse is probably not configured correctly."
+  exit 1
+fi
+if [ -z ${MAINTENANCE_VERSION+x} ]; then
+  echo "MAINTENANCE_VERSION is unset. Check your pipeline configuration and make sure this script is called properly."
+  exit 1
+fi
+ROOT_DIR=$(pwd)
+
+CONCOURSE_VERSION=$(cat ${GEMFIRE_BUILD_VERSION})
+PRODUCT_VERSION=${CONCOURSE_VERSION%%-*}
+BUILD_ID=${CONCOURSE_VERSION##*.}
+
+echo "Concourse VERSION is ${CONCOURSE_VERSION}"
+echo "Product VERSION is ${PRODUCT_VERSION}"
+echo "Build ID is ${BUILD_ID}"
+
+printf "\nUsing the following JDK:"
+java -version
+printf "\n\n"
+
+export TERM=${TERM:-dumb}
+export DEST_DIR=$(pwd)/built-geode
+export TMPDIR=${DEST_DIR}/tmp
+mkdir -p ${TMPDIR}
+
 pushd geode
-./gradlew --no-daemon build
+./gradlew --no-daemon -PversionNumber=${PRODUCT_VERSION} -PbuildId=${BUILD_ID} --system-prop "java.io.tmpdir=${TMPDIR}" build
 popd
+
+tar zcvf ${DEST_DIR}/geodefiles-${CONCOURSE_VERSION}.tgz geode
