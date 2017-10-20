@@ -19,6 +19,7 @@
 
 
 set -e
+BUILD_DATE=$(date +%s)
 EMAIL_SUBJECT="results/subject"
 EMAIL_BODY="results/body"
 
@@ -76,7 +77,8 @@ GRADLE_EXIT_STATUS=$?
 set -e
 
 popd
-
+TEST_RESULTS_DESTINATION="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${CONCOURSE_VERSION}/build/${BUILD_DATE}"
+ARCHIVE_DESTINATION="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/${CONCOURSE_VERSION}/${BUILD_DATE}/geodefiles-${CONCOURSE_VERSION}.tgz"
 URL_PATH="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${CONCOURSE_VERSION}/"
 ARTIFACTS_PATH="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/geodefiles-${CONCOURSE_VERSION}.tgz"
 
@@ -94,10 +96,10 @@ The build job for Apache Geode version ${CONCOURSE_VERSION} has completed succes
 
 
 Build artifacts are available at:
-http://${ARTIFACTS_PATH}
+http://${ARCHIVE_DESTINATION}
 
 Test results are available at:
-http://${URL_PATH}
+http://${TEST_RESULTS_DESTINATION}
 
 
 =================================================================================================
@@ -119,10 +121,10 @@ The build job for Apache Geode version ${CONCOURSE_VERSION} has failed.
 
 
 Build artifacts are available at:
-http://${ARTIFACTS_PATH}
+http://${ARCHIVE_DESTINATION}
 
 Test results are available at:
-http://${URL_PATH}
+http://${TEST_RESULTS_DESTINATION}
 
 
 Job: \${ATC_EXTERNAL_URL}/teams/\${BUILD_TEAM_NAME}/pipelines/\${BUILD_PIPELINE_NAME}/jobs/\${BUILD_JOB_NAME}/builds/\${BUILD_NAME}
@@ -139,19 +141,19 @@ if [ ! -d "geode/build/reports/combined" ]; then
 fi
 
 pushd geode/build/reports/combined
-gsutil -q -m cp -r * gs://${URL_PATH}
+gsutil -q -m cp -r * gs://${TEST_RESULTS_DESTINATION}
 popd
 
 echo ""
 printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=  Test Results Website =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\033[0m\n"
-printf "\033[92mhttp://${URL_PATH}\033[0m\n"
+printf "\033[92mhttp://${TEST_RESULTS_DESTINATION}\033[0m\n"
 printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\033[0m\n"
 printf "\n"
 
 tar zcf ${DEST_DIR}/geodefiles-${CONCOURSE_VERSION}.tgz geode
 printf "\033[92mTest artifacts from this job are available at:\033[0m\n"
 printf "\n"
-printf "\033[92mhttp://${ARTIFACTS_PATH}\033[0m\n"
+printf "\033[92mhttp://${ARCHIVE_DESTINATION}\033[0m\n"
 
 if [ ${GRADLE_EXIT_STATUS} -eq 0 ]; then
     sendSuccessfulJobEmail
