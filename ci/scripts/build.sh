@@ -81,20 +81,18 @@ else
     pushd geode/build/reports/combined
     URL_PATH="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${CONCOURSE_VERSION}/"
     ARTIFACTS_PATH="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/geodefiles-${CONCOURSE_VERSION}.tgz"
-    gsutil -m cp -r * gs://${URL_PATH}
+    gsutil -q -m cp -r * gs://${URL_PATH}
     echo ""
     printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=  Test Results Website =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\033[0m\n"
     printf "\033[92mhttp://${URL_PATH}\033[0m\n"
     printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\033[0m\n"
     printf "\n"
-    printf "\033[92mTest artifacts from this job are available at:\n"
-    printf "\n"
-    printf "\033[92mhttp://${ARTIFACTS_PATH}\033[0m\n"
-    echo "Test results are available at:"
-    echo "http://${URL_PATH}"
     popd
 fi
 
-tar zcvf ${DEST_DIR}/geodefiles-${CONCOURSE_VERSION}.tgz geode
+tar zcf ${DEST_DIR}/geodefiles-${CONCOURSE_VERSION}.tgz geode
+printf "\033[92mTest artifacts from this job are available at:\033[0m\n"
+printf "\n"
+printf "\033[92mhttp://${ARTIFACTS_PATH}\033[0m\n"
 
 exit ${GRADLE_EXIT_STATUS}
