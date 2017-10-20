@@ -56,6 +56,7 @@ curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 
 # Update the package list and install the Cloud SDK
 apt-get update && apt-get install -y google-cloud-sdk
+gcloud config set account ${SERVICE_ACCOUNT}
 
 export TERM=${TERM:-dumb}
 export DEST_DIR=$(pwd)/built-geode
@@ -63,7 +64,22 @@ export TMPDIR=${DEST_DIR}/tmp
 mkdir -p ${TMPDIR}
 
 pushd geode
+set +e
 ./gradlew --no-daemon -PversionNumber=${PRODUCT_VERSION} -PbuildId=${BUILD_ID} --system-prop "java.io.tmpdir=${TMPDIR}" build
+GRADLE_EXIT_STATUS=$?
+set -e
+
 popd
+
+if [ ! -d "geode/build/reports/combined" ]; then
+    echo "No tests exist, compile failed."
+else
+    pushd geode/build/reports/combined
+    URL_PATH="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${CONCOURSE_VERSION}/"
+    gsutil -m cp -r * gs://${URL_PATH}
+    echo "Test results are available at:"
+    echo "http://${URL_PATH}"
+    popd
+fi
 
 tar zcvf ${DEST_DIR}/geodefiles-${CONCOURSE_VERSION}.tgz geode
