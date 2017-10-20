@@ -30,6 +30,10 @@ if [ -z ${MAINTENANCE_VERSION+x} ]; then
   echo "MAINTENANCE_VERSION is unset. Check your pipeline configuration and make sure this script is called properly."
   exit 1
 fi
+if [ -z ${SERVICE_ACCOUNT+x} ]; then
+  echo "SERVICE_ACCOUNT is unset. Check your pipeline configuration and make sure this script is called properly."
+  exit 1
+fi
 ROOT_DIR=$(pwd)
 
 CONCOURSE_VERSION=$(cat ${GEODE_BUILD_VERSION})
