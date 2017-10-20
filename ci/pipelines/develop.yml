@@ -15,6 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+resource_types:
+  - name: gcs-resource
+    type: docker-image
+    source:
+      repository: frodenas/gcs-resource
 
 resources:
 - name: geode
@@ -24,6 +29,28 @@ resources:
     branch: add_concourse
     ignore_paths:
     - ci/*
+- name: geode-ci
+  type: git
+  source:
+    depth: 1
+    uri: https://github.com/smgoller/geode.git
+    branch: add_concourse
+    paths:
+    - ci/*
+- name: geode-build-version
+  type: semver
+  source:
+    driver: gcs
+    bucket: ((!concourse-bucket))
+    key: ((!version-key))
+    json_key: ((!concourse-gcp-key))
+    initial_version: 1.3.0
+- name: geode-build-artifact
+  type: gcs-resource
+  source:
+    bucket: ((!public-bucket))
+    json_key: ((!concourse-gcp-key))
+    regexp: artifacts/develop/geodefiles-(.*).tgz
 
 jobs:
 - name: Build
@@ -32,15 +59,30 @@ jobs:
   plan:
     - get: geode
       trigger: true
+    - get: geode-ci
+    - get: geode-build-version
+      params: {pre: build}
     - task: build
       config:
         platform: linux
         inputs:
         - name: geode
+        - name: geode-ci
+        - name: geode-build-version
+        outputs:
+        - name: built-geode
         image_resource:
           type: docker-image
           source:
             repository: openjdk
             tag: 8-jdk
+        params:
+          MAINTENANCE_VERSION: ((!maintenance-version))
         run:
-          path: geode/ci/scripts/build.sh
+          path: geode-ci/ci/scripts/build.sh
+    - put: geode-build-artifact
+      params:
+        file: built-geode/geodefiles-*.tgz
+    - put: geode-build-version
+      params:
+        file: geode-build-version/number
