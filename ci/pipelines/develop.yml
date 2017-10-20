@@ -20,6 +20,10 @@ resource_types:
     type: docker-image
     source:
       repository: frodenas/gcs-resource
+  - name: email
+    type: docker-image
+    source:
+      repository: pcfseceng/email-resource
 
 resources:
 - name: geode
@@ -51,7 +55,16 @@ resources:
     bucket: ((!public-bucket))
     json_key: ((!concourse-gcp-key))
     regexp: artifacts/develop/geodefiles-(.*).tgz
-
+- name: send-notification-email
+  type: email
+  source:
+    smtp:
+      host: ((!source-email-server))
+      port: "587"
+      username: ((!source-email-username))
+      password: ((!source-email-password))
+    from: ((!source-email-address))
+    to: [ ((!notification-email-address)) ]
 jobs:
 - name: Build
   serial: true
@@ -71,6 +84,7 @@ jobs:
         - name: geode-build-version
         outputs:
         - name: built-geode
+        - name: results
         image_resource:
           type: docker-image
           source:
@@ -87,3 +101,8 @@ jobs:
     - put: geode-build-version
       params:
         file: geode-build-version/number
+    - ensure:
+      put: send-notification-email
+      params:
+        subject: results/subject
+        body: results/body

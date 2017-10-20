@@ -19,6 +19,8 @@
 
 
 set -e
+EMAIL_SUBJECT="results/subject"
+EMAIL_BODY="results/body"
 
 GEODE_BUILD_VERSION=geode-build-version/number
 
@@ -75,12 +77,65 @@ set -e
 
 popd
 
+URL_PATH="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${CONCOURSE_VERSION}/"
+ARTIFACTS_PATH="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/geodefiles-${CONCOURSE_VERSION}.tgz"
+
+function sendSuccessfulJobEmail {
+  echo "Sending job success email"
+
+  cat <<EOF >${EMAIL_SUBJECT}
+Build for version ${CONCOURSE_VERSION} of Apache Geode succeeded.
+EOF
+
+  cat <<EOF >${EMAIL_BODY}
+=================================================================================================
+
+The build job for Apache Geode version ${CONCOURSE_VERSION} has completed successfully.
+
+
+Build artifacts are available at:
+http://${ARTIFACTS_PATH}
+
+Test results are available at:
+http://${URL_PATH}
+
+
+=================================================================================================
+EOF
+
+}
+
+function sendFailureJobEmail {
+  echo "Sending job failure email"
+
+  cat <<EOF >${EMAIL_SUBJECT}
+Build for version ${CONCOURSE_VERSION} of Apache Geode failed.
+EOF
+
+  cat <<EOF >${EMAIL_BODY}
+=================================================================================================
+
+The build job for Apache Geode version ${CONCOURSE_VERSION} has failed.
+
+
+Build artifacts are available at:
+http://${ARTIFACTS_PATH}
+
+Test results are available at:
+http://${URL_PATH}
+
+
+Job: \${ATC_EXTERNAL_URL}/teams/\${BUILD_TEAM_NAME}/pipelines/\${BUILD_PIPELINE_NAME}/jobs/\${BUILD_JOB_NAME}/builds/\${BUILD_NAME}
+
+=================================================================================================
+EOF
+
+}
+
 if [ ! -d "geode/build/reports/combined" ]; then
     echo "No tests exist, compile failed."
 else
     pushd geode/build/reports/combined
-    URL_PATH="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${CONCOURSE_VERSION}/"
-    ARTIFACTS_PATH="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/geodefiles-${CONCOURSE_VERSION}.tgz"
     gsutil -q -m cp -r * gs://${URL_PATH}
     echo ""
     printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=  Test Results Website =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\033[0m\n"
@@ -94,5 +149,11 @@ tar zcf ${DEST_DIR}/geodefiles-${CONCOURSE_VERSION}.tgz geode
 printf "\033[92mTest artifacts from this job are available at:\033[0m\n"
 printf "\n"
 printf "\033[92mhttp://${ARTIFACTS_PATH}\033[0m\n"
+
+if [ ${GRADLE_EXIT_STATUS} -eq 0 ]; then
+    sendSuccessfulJobEmail
+else
+    sendFailureJobEmail
+fi
 
 exit ${GRADLE_EXIT_STATUS}
