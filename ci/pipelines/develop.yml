@@ -95,14 +95,14 @@ jobs:
           SERVICE_ACCOUNT: ((!concourse-gcp-account))
         run:
           path: geode-ci/ci/scripts/build.sh
+      ensure:
+        put: send-notification-email
+        params:
+          subject: results/subject
+          body: results/body
     - put: geode-build-artifact
       params:
         file: built-geode/geodefiles-*.tgz
     - put: geode-build-version
       params:
         file: geode-build-version/number
-    - ensure:
-      put: send-notification-email
-      params:
-        subject: results/subject
-        body: results/body

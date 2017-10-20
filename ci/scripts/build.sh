@@ -134,16 +134,19 @@ EOF
 
 if [ ! -d "geode/build/reports/combined" ]; then
     echo "No tests exist, compile failed."
-else
-    pushd geode/build/reports/combined
-    gsutil -q -m cp -r * gs://${URL_PATH}
-    echo ""
-    printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=  Test Results Website =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\033[0m\n"
-    printf "\033[92mhttp://${URL_PATH}\033[0m\n"
-    printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\033[0m\n"
-    printf "\n"
-    popd
+    mkdir -p geode/build/reports/combined
+    echo "<html><head><title>No Test Results Were Captured</title></head><body><h1>No Test Results Were Captured</h1></body></html>" > geode/build/reports/combined/index.html
 fi
+
+pushd geode/build/reports/combined
+gsutil -q -m cp -r * gs://${URL_PATH}
+popd
+
+echo ""
+printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=  Test Results Website =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\033[0m\n"
+printf "\033[92mhttp://${URL_PATH}\033[0m\n"
+printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\033[0m\n"
+printf "\n"
 
 tar zcf ${DEST_DIR}/geodefiles-${CONCOURSE_VERSION}.tgz geode
 printf "\033[92mTest artifacts from this job are available at:\033[0m\n"
