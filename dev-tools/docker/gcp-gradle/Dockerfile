@@ -1,33 +1,14 @@
-FROM ubuntu:16.04
+FROM apachegeode/geode-build
 
-# Java license acceptance script
-RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
-
-# Install and update the kitchen sink
-RUN apt-get update && \
-    apt-get install -y software-properties-common  && \
-    add-apt-repository ppa:webupd8team/java && \
-    apt-get update && \
-    apt-get install -y --allow-unauthenticated \
-      build-essential cmake \
-      man unzip vim \
-      lsb-release curl git \
-      htop wget libssl-dev \
-      oracle-java8-installer && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /var/cache/oracle-jdk8-installer
-
-# Vars
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
-# Using 'xenial' since we know this is ubuntu:16.04
-ENV CLOUD_SDK_REPO "cloud-sdk-xenial"
 
 # Setup Google APT repository
-RUN echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+RUN apt-get update && \
+  apt-get install -y lsb-release && \
+  echo "deb http://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -c -s) main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
+  apt-get update && apt-get install -y google-cloud-sdk && \
+  apt-get clean
 
-#Get the Google needs for cloud file storage
-RUN apt-get update && apt-get install -y google-cloud-sdk
-
+# RUN chmod +w /usr/local/maven_files/wrapper/dists/gradle-3.5.1-bin/5aglzaqc99i3lll5iwkbm96su/gradle-3.5.1-bin.zip.lck
 
 ENV GRADLE_USER_HOME /usr/local/maven_files
 WORKDIR /tmp/work
