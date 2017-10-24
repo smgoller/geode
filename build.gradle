@@ -15,20 +15,15 @@
  * limitations under the License.
  */
 
-buildscript {
-  repositories {
-    maven { url "https://plugins.gradle.org/m2/" }
-  }
 
-  dependencies {
-    classpath "gradle.plugin.org.nosphere.apache:creadur-rat-gradle:0.2.0"
-    classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
-    classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.0.1'
-    classpath "com.diffplug.gradle.spotless:spotless:2.2.0"
-    classpath "me.champeau.gradle:jmh-gradle-plugin:0.3.1"
-    classpath "com.pedjak.gradle.plugins:dockerized-test:0.5.4"
-    classpath "gradle.plugin.com.github.upthewaterspout.jpfgradle:jpfgradle:0.3"
-  }
+plugins {
+  id "org.nosphere.apache.rat" version "0.2.0"
+  id "com.bmuschko.nexus" version "2.3.1"
+  id "org.sonarqube" version "2.0.1"
+  id "com.diffplug.gradle.spotless" version "2.2.0"
+  id "me.champeau.gradle.jmh" version "0.3.1"
+  id "com.github.pedjak.dockerized-test" version "0.5.4"
+  id "com.github.upthewaterspout.jpf" version "0.3"
 }
 
 apply plugin: 'wrapper'
