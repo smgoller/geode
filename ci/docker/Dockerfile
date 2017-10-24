@@ -23,10 +23,10 @@ RUN apt-get update && \
     apt-get update && apt-get install -y google-cloud-sdk && \
     apt-get clean
 
+# For a CI tool, disable updates to gcloud since they'll be thrown away at end of run
 RUN gcloud config set core/disable_usage_reporting true && \
     gcloud config set component_manager/disable_update_check true && \
     gcloud config set metrics/environment github_docker_image
-
 
 ENV GRADLE_USER_HOME /usr/local/maven_files
 WORKDIR /tmp/work
@@ -34,6 +34,5 @@ ADD cache_dependencies.sh cache_dependencies.sh
 RUN chmod +x cache_dependencies.sh && \
     ./cache_dependencies.sh && \
     rm -rf /tmp/work
-
 
 ENTRYPOINT []
