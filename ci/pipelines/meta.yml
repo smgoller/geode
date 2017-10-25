@@ -39,6 +39,13 @@ resources:
     branch: create-docker-image
     paths:
     - ci/pipelines/develop.yml
+- name: geode-docker-images-pipeline
+  type: git
+  source:
+    uri: https://github.com/smgoller/geode.git
+    branch: create-docker-image
+    paths:
+    - ci/pipelines/docker-images.yml
 
 jobs:
 - name: set-develop-pipeline
@@ -53,3 +60,15 @@ jobs:
       - name: develop
         team: main
         config_file: geode-develop-pipeline/ci/pipelines/develop.yml
+- name: set-docker-images-pipeline
+  serial: true
+  public: true
+  plan:
+  - get: geode-docker-images-pipeline
+    trigger: true
+  - put: apachegeode-concourse
+    params:
+      pipelines:
+      - name: docker-images
+        team: main
+        config_file: geode-docker-images-pipeline/ci/pipelines/docker-images.yml
