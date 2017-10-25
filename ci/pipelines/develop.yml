@@ -106,15 +106,3 @@ jobs:
     - put: geode-build-version
       params:
         file: geode-build-version/number
-- name: hi-there
-  serial: true
-  public: true
-  plan:
-    - get: geode
-    - task: hi-there
-      config:
-        platform: linux
-        inputs:
-        - name: geode
-        run: /bin/echo
-          args: ["hi there"]
