@@ -19,7 +19,8 @@ FROM apachegeode/geode-build
 # Setup Google APT repository
 RUN apt-get update && \
     apt-get install -y lsb-release && \
-    echo "deb http://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -c -s) main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
+    echo "deb http://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -c -s) main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
     apt-get update && apt-get install -y google-cloud-sdk && \
     apt-get clean
 
@@ -31,8 +32,7 @@ RUN gcloud config set core/disable_usage_reporting true && \
 ENV GRADLE_USER_HOME /usr/local/maven_files
 WORKDIR /tmp/work
 ADD cache_dependencies.sh cache_dependencies.sh
-RUN chmod +x cache_dependencies.sh && \
-    ./cache_dependencies.sh && \
-    rm -rf /tmp/work
+RUN chmod +x cache_dependencies.sh
+RUN ./cache_dependencies.sh && rm -rf /tmp/work
 
 ENTRYPOINT []
