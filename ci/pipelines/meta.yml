@@ -16,34 +16,40 @@
 #
 
 ---
+resource_types:
+- name: concourse-pipeline
+  type: docker-image
+  source:
+    repository: concourse/concourse-pipeline-resource
+
 resources:
-# apachegeode-build-concourse resources
-- name: apachegeode-build-concourse-dockerfile
+- name: apachegeode-concourse
+  type: concourse-pipeline
+  source:
+    target: https://concourse.apachegeode-ci.info
+    insecure: "true"
+    teams:
+    - name: main
+      username: ((!concourse-username))
+      password: ((!concourse-password))
+- name: geode-develop-pipeline
   type: git
   source:
     uri: https://github.com/smgoller/geode.git
     branch: create-docker-image
     paths:
-    - ci/docker/*
-
-- name: apachegeode-build-concourse-docker-image
-  type: docker-image
-  source:
-    username: ((!docker-username))
-    password: ((!docker-password))
-    repository: smgoller/apachegeode-build-concourse
+    - ci/pipelines/develop.yml
 
 jobs:
-# apachegeode-build-concourse
-- name: build-apachegeode-build-concourse-docker-image
-  public: true
+- name: set-develop-pipeline
   serial: true
+  public: true
   plan:
-  - aggregate:
-    - get: apachegeode-build-concourse-dockerfile
-      trigger: true
-  - put: apachegeode-build-concourse-docker-image
+  - get: geode-develop-pipeline
+    trigger: true
+  - put: apachegeode-concourse
     params:
-      build: apachegeode-build-concourse-dockerfile/ci/docker
-      tag_as_latest: true
-
+      pipelines:
+      - name: develop
+        team: main
+        config_file: geode-develop-pipeline/ci/pipelines/develop.yml
