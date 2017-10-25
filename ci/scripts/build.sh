@@ -66,7 +66,7 @@ set -e
 
 popd
 TEST_RESULTS_DESTINATION="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${CONCOURSE_VERSION}/build/${BUILD_DATE}/"
-ARCHIVE_DESTINATION="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/${CONCOURSE_VERSION}/${BUILD_DATE}/geodefiles-${CONCOURSE_VERSION}.tgz"
+ARCHIVE_DESTINATION="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/${CONCOURSE_VERSION}/geodefiles-${CONCOURSE_VERSION}.tgz"
 URL_PATH="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${CONCOURSE_VERSION}/"
 ARTIFACTS_PATH="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/geodefiles-${CONCOURSE_VERSION}.tgz"
 

@@ -1,4 +1,3 @@
----
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -15,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+---
 resource_types:
   - name: gcs-resource
     type: docker-image
@@ -96,16 +97,17 @@ jobs:
         run:
           path: geode-ci/ci/scripts/build.sh
       ensure:
-        put: send-notification-email
-        params:
-          subject: results/subject
-          body: results/body
-    - put: geode-build-artifact
-      params:
-        file: built-geode/geodefiles-*.tgz
-    - put: geode-build-version
-      params:
-        file: geode-build-version/number
+        aggregate:
+          - put: send-notification-email
+            params:
+              subject: results/subject
+              body: results/body
+          - put: geode-build-artifact
+            params:
+              file: built-geode/geodefiles-*.tgz
+          - put: geode-build-version
+            params:
+              file: geode-build-version/number
 - name: hi-there
   serial: true
   public: true
