@@ -30,7 +30,7 @@ resources:
   type: git
   source:
     uri: https://github.com/smgoller/geode.git
-    branch: add_concourse
+    branch: create-docker-image
     ignore_paths:
     - ci/*
 - name: geode-ci
@@ -38,7 +38,7 @@ resources:
   source:
     depth: 1
     uri: https://github.com/smgoller/geode.git
-    branch: add_concourse
+    branch: create-docker-image
     paths:
     - ci/*
 - name: geode-build-version
