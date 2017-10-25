@@ -32,7 +32,7 @@ pushd geode
 EOF
 
 # Include rat to get its runtime dependencies, which are apparently not captured by the 'getDeps' task above
-./gradlew --no-daemon getDeps :rat
+./gradlew --no-daemon :rat getDeps
 
 popd
 

@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 FROM apachegeode/geode-build
-
+ENTRYPOINT []
 
 # Setup Google APT repository
 RUN apt-get update && \
@@ -35,4 +35,3 @@ ADD cache_dependencies.sh cache_dependencies.sh
 RUN chmod +x cache_dependencies.sh
 RUN ./cache_dependencies.sh && rm -rf /tmp/work
 
-ENTRYPOINT []
