@@ -1,0 +1,31 @@
+resources:
+# apachegeode-build-concourse resources
+- name: apachegeode-build-concourse-dockerfile
+  type: git
+  source:
+    uri: https://github.com/smgoller/geode.git
+    branch: create-docker-image
+    paths:
+    - ci/docker/*
+
+- name: apachegeode-build-concourse-docker-image
+  type: docker-image
+  source:
+    username: ((!docker-username))
+    password: ((!docker-password))
+    repository: smgoller/apachegeode-build-concourse
+
+jobs:
+# apachegeode-build-concourse
+- name: build-apachegeode-build-concourse-docker-image
+  public: true
+  serial: true
+  plan:
+  - aggregate:
+    - get: apachegeode-build-concourse-dockerfile
+      trigger: true
+  - put: apachegeode-build-concourse-docker-image
+    params:
+      build: apachegeode-build-concourse-dockerfile/ci/docker
+      tag_as_latest: true
+
