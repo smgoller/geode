@@ -116,5 +116,6 @@ jobs:
         platform: linux
         inputs:
         - name: geode
-        run: /bin/echo
+        run:
+          path: /bin/echo
           args: ["hi there"]
