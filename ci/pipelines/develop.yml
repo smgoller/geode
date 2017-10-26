@@ -32,8 +32,6 @@ resources:
   source:
     uri: https://github.com/smgoller/geode.git
     branch: create-docker-image
-    ignore_paths:
-    - ci/*
 - name: geode-ci
   type: git
   source:
