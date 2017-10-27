@@ -156,7 +156,7 @@ find . -name "*-progress*txt" >> ${directories_file}
 echo "Collecting the following artifacts..."
 cat ${directories_file}
 echo ""
-mkdir -P ${BUILD_ARTIFACTS_DIR}/progress
+mkdir -p ${BUILD_ARTIFACTS_DIR}/progress
 tar zcf - -T ${directories_file} | (cd ${BUILD_ARTIFACTS_DIR}/progress; tar xpf -)
 popd
 
