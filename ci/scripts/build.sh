@@ -57,7 +57,7 @@ export TERM=${TERM:-dumb}
 export DEST_DIR=$(pwd)/built-geode
 export TMPDIR=${DEST_DIR}/tmp
 mkdir -p ${TMPDIR}
-
+export BUILD_ARTIFACTS_DIR=${DEST_DIR}/test-artifacts
 pushd geode
 set +e
 ./gradlew --no-daemon -PversionNumber=${PRODUCT_VERSION} -PbuildId=${BUILD_ID} --system-prop "java.io.tmpdir=${TMPDIR}" build
@@ -69,7 +69,8 @@ TEST_RESULTS_DESTINATION="files.apachegeode-ci.info/test-results/${MAINTENANCE_V
 ARCHIVE_DESTINATION="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/geodefiles-${CONCOURSE_VERSION}.tgz"
 URL_PATH="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${CONCOURSE_VERSION}/"
 ARTIFACTS_PATH="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/geodefiles-${CONCOURSE_VERSION}.tgz"
-
+BUILD_ARTIFACTS_FILE=geode-build-artifacts-${CONCOURSE_VERSION}.tgz
+BUILD_ARTIFACTS_DESTINATION="files.apachegeode-ci.info/builds/${CONCOURSE_VERSION}/${BUILD_ARTIFACTS_FILE}"
 function sendSuccessfulJobEmail {
   echo "Sending job success email"
 
@@ -139,9 +140,31 @@ printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 printf "\n"
 
 tar zcf ${DEST_DIR}/geodefiles-${CONCOURSE_VERSION}.tgz geode
-printf "\033[92mTest artifacts from this job are available at:\033[0m\n"
+printf "\033[92mFull build artifacts from this job are available at:\033[0m\n"
 printf "\n"
 printf "\033[92mhttp://${ARCHIVE_DESTINATION}\033[0m\n"
+
+cp -r geode/geode-assembly/build/distributions ${BUILD_ARTIFACTS_DIR}/
+cp -r geode/build/reports/rat ${BUILD_ARTIFACTS_DIR}/
+cp -r geode/build/reports/combined ${BUILD_ARTIFACTS_DIR}/
+
+directories_file=${DEST_DIR}/artifact_directories
+
+pushd geode
+find . -name "*-progress*txt" >> ${directories_file}
+echo "Collecting the following artifacts..."
+cat ${directories_file}
+echo ""
+tar zcf - -T ${directories_file} | (cd ${BUILD_ARTIFACTS_DIR}/progress; tar xpf -)
+popd
+
+pushd ${BUILD_ARTIFACTS_DIR}
+tar zcf ${DEST_DIR}/${BUILD_ARTIFACTS_FILE} .
+popd
+gsutil -q cp ${DEST_DIR}/${BUILD_ARTIFACTS_FILE} gs://${BUILD_ARTIFACTS_DESTINATION}
+printf "\033[92mBuild artifacts from this job are available at:\033[0m\n"
+printf "\n"
+printf "\033[92mhttp://${BUILD_ARTIFACTS_DESTINATION}\033[0m\n"
 
 if [ ${GRADLE_EXIT_STATUS} -eq 0 ]; then
     sendSuccessfulJobEmail
