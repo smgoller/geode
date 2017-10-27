@@ -23,10 +23,11 @@ BUILD_DATE=$(date +%s)
 EMAIL_SUBJECT="results/subject"
 EMAIL_BODY="results/body"
 
-GEODE_BUILD_VERSION=geode-build-version/number
+GEODE_BUILD_VERSION_FILE=geode-build-version/number
+GEODE_BUILD_VERSION_NUMBER=$(grep "versionNumber *=" gradle.properties | awk -F "=" '{print $2}' | tr -d ' ')
 
-if [ ! -e "${GEODE_BUILD_VERSION}" ]; then
-  echo "${GEODE_BUILD_VERSION} file does not exist. Concourse is probably not configured correctly."
+if [ ! -e "${GEODE_BUILD_VERSION_FILE}" ]; then
+  echo "${GEODE_BUILD_VERSION_FILE} file does not exist. Concourse is probably not configured correctly."
   exit 1
 fi
 if [ -z ${MAINTENANCE_VERSION+x} ]; then
@@ -37,11 +38,19 @@ if [ -z ${SERVICE_ACCOUNT+x} ]; then
   echo "SERVICE_ACCOUNT is unset. Check your pipeline configuration and make sure this script is called properly."
   exit 1
 fi
+
+if [ -z ${GEODE_BUILD_VERSION_NUMBER+x} ]; then
+  echo "gradle.properties does not seem to contain a valid versionNumber. Please check the source tree."
+  exit 1
+fi
 ROOT_DIR=$(pwd)
 
-CONCOURSE_VERSION=$(cat ${GEODE_BUILD_VERSION})
-PRODUCT_VERSION=${CONCOURSE_VERSION%%-*}
+CONCOURSE_VERSION=$(cat ${GEODE_BUILD_VERSION_FILE})
+CONCOURSE_PRODUCT_VERSION=${CONCOURSE_VERSION%%-*}
+PRODUCT_VERSION=${GEODE_BUILD_VERSION_NUMBER}
+CONCOURSE_BUILD_SLUG=${CONCOURSE_VERSION%%*-}
 BUILD_ID=${CONCOURSE_VERSION##*.}
+echo -n "${PRODUCT_VERSION}-${CONCOURSE_BUILD_SLUG}" > ${GEODE_BUILD_VERSION_FILE}
 
 echo "Concourse VERSION is ${CONCOURSE_VERSION}"
 echo "Product VERSION is ${PRODUCT_VERSION}"
