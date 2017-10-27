@@ -77,10 +77,12 @@ GRADLE_EXIT_STATUS=$?
 set -e
 
 popd
-TEST_RESULTS_DESTINATION="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${FULL_PRODUCT_VERSION}/"
-ARCHIVE_DESTINATION="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/geodefiles-${FULL_PRODUCT_VERSION}.tgz"
+ARTIFACTS_DESTINATION="files.apachgedeo-ci.info/builds/${FULL_PRODUCT_VERSION}"
+TEST_RESULTS_DESTINATION="${ARTIFACTS_DESTINATION}/test-reulsts/"
+FULL_BUILD_ARCHIVE_DESTINATION="${ARTIFACTS_DESTINATION}/geodefiles-${FULL_PRODUCT_VERSION}.tgz"
 BUILD_ARTIFACTS_FILENAME=geode-build-artifacts-${FULL_PRODUCT_VERSION}.tgz
-BUILD_ARTIFACTS_DESTINATION="files.apachegeode-ci.info/builds/${FULL_PRODUCT_VERSION}/${BUILD_ARTIFACTS_FILENAME}"
+BUILD_ARTIFACTS_DESTINATION="${ARTIFACTS_DESTINATION}/${BUILD_ARTIFACTS_FILENAME}"
+
 function sendSuccessfulJobEmail {
   echo "Sending job success email"
 
@@ -95,7 +97,7 @@ The build job for Apache Geode version ${FULL_PRODUCT_VERSION} has completed suc
 
 
 Build artifacts are available at:
-http://${ARCHIVE_DESTINATION}
+http://${BUILD_ARTIFACTS_DESTINATION}
 
 Test results are available at:
 http://${TEST_RESULTS_DESTINATION}
@@ -120,7 +122,7 @@ The build job for Apache Geode version ${FULL_PRODUCT_VERSION} has failed.
 
 
 Build artifacts are available at:
-http://${ARCHIVE_DESTINATION}
+http://${BUILD_ARTIFACTS_DESTINATION}
 
 Test results are available at:
 http://${TEST_RESULTS_DESTINATION}
@@ -150,9 +152,9 @@ printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 printf "\n"
 
 tar zcf ${DEST_DIR}/geodefiles-${FULL_PRODUCT_VERSION}.tgz geode
-printf "\033[92mFull build artifacts from this job are available at:\033[0m\n"
+printf "\033[92mbuild artifacts from this job are available at:\033[0m\n"
 printf "\n"
-printf "\033[92mhttp://${ARCHIVE_DESTINATION}\033[0m\n"
+printf "\033[92mhttp://${BUILD_ARTIFACTS_DESTINATION}\033[0m\n"
 
 cp -r geode/geode-assembly/build/distributions ${BUILD_ARTIFACTS_DIR}/
 cp -r geode/build/reports/rat ${BUILD_ARTIFACTS_DIR}/
