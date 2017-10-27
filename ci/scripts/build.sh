@@ -58,6 +58,7 @@ export DEST_DIR=$(pwd)/built-geode
 export TMPDIR=${DEST_DIR}/tmp
 mkdir -p ${TMPDIR}
 export BUILD_ARTIFACTS_DIR=${DEST_DIR}/test-artifacts
+mkdir -p ${BUILD_ARTIFACTS_DIR}
 pushd geode
 set +e
 ./gradlew --no-daemon -PversionNumber=${PRODUCT_VERSION} -PbuildId=${BUILD_ID} --system-prop "java.io.tmpdir=${TMPDIR}" build
@@ -155,6 +156,7 @@ find . -name "*-progress*txt" >> ${directories_file}
 echo "Collecting the following artifacts..."
 cat ${directories_file}
 echo ""
+mkdir -P ${BUILD_ARTIFACTS_DIR}/progress
 tar zcf - -T ${directories_file} | (cd ${BUILD_ARTIFACTS_DIR}/progress; tar xpf -)
 popd
 
