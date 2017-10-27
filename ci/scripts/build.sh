@@ -24,7 +24,7 @@ EMAIL_SUBJECT="results/subject"
 EMAIL_BODY="results/body"
 
 GEODE_BUILD_VERSION_FILE=geode-build-version/number
-GEODE_BUILD_VERSION_NUMBER=$(grep "versionNumber *=" gradle.properties | awk -F "=" '{print $2}' | tr -d ' ')
+GEODE_BUILD_VERSION_NUMBER=$(grep "versionNumber *=" geode/gradle.properties | awk -F "=" '{print $2}' | tr -d ' ')
 
 if [ ! -e "${GEODE_BUILD_VERSION_FILE}" ]; then
   echo "${GEODE_BUILD_VERSION_FILE} file does not exist. Concourse is probably not configured correctly."
