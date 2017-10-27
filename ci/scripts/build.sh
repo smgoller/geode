@@ -50,7 +50,8 @@ CONCOURSE_PRODUCT_VERSION=${CONCOURSE_VERSION%%-*}
 PRODUCT_VERSION=${GEODE_BUILD_VERSION_NUMBER}
 CONCOURSE_BUILD_SLUG=${CONCOURSE_VERSION##*-}
 BUILD_ID=${CONCOURSE_VERSION##*.}
-echo -n "${PRODUCT_VERSION}-${CONCOURSE_BUILD_SLUG}" > ${GEODE_BUILD_VERSION_FILE}
+FULL_PRODUCT_VERSION=${PRODUCT_VERSION}-${CONCOURSE_BUILD_SLUG}
+echo -n "${FULL_PRODUCT_VERSION}" > ${GEODE_BUILD_VERSION_FILE}
 
 echo "Concourse VERSION is ${CONCOURSE_VERSION}"
 echo "Product VERSION is ${PRODUCT_VERSION}"
@@ -70,28 +71,28 @@ export BUILD_ARTIFACTS_DIR=${DEST_DIR}/test-artifacts
 mkdir -p ${BUILD_ARTIFACTS_DIR}
 pushd geode
 set +e
-./gradlew --no-daemon -PversionNumber=${PRODUCT_VERSION} -PbuildId=${BUILD_ID} --system-prop "java.io.tmpdir=${TMPDIR}" build
+./gradlew --no-daemon -PbuildId=${BUILD_ID} --system-prop "java.io.tmpdir=${TMPDIR}" build
 GRADLE_EXIT_STATUS=$?
 set -e
 
 popd
-TEST_RESULTS_DESTINATION="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${CONCOURSE_VERSION}/build/${BUILD_DATE}/"
-ARCHIVE_DESTINATION="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/geodefiles-${CONCOURSE_VERSION}.tgz"
-URL_PATH="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${CONCOURSE_VERSION}/"
-ARTIFACTS_PATH="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/geodefiles-${CONCOURSE_VERSION}.tgz"
-BUILD_ARTIFACTS_FILE=geode-build-artifacts-${CONCOURSE_VERSION}.tgz
-BUILD_ARTIFACTS_DESTINATION="files.apachegeode-ci.info/builds/${CONCOURSE_VERSION}/${BUILD_ARTIFACTS_FILE}"
+TEST_RESULTS_DESTINATION="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${PRODUCT_VERSION}/build/${BUILD_DATE}/"
+ARCHIVE_DESTINATION="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/geodefiles-${PRODUCT_VERSION}.tgz"
+URL_PATH="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${PRODUCT_VERSION}/"
+ARTIFACTS_PATH="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/geodefiles-${PRODUCT_VERSION}.tgz"
+BUILD_ARTIFACTS_FILE=geode-build-artifacts-${PRODUCT_VERSION}.tgz
+BUILD_ARTIFACTS_DESTINATION="files.apachegeode-ci.info/builds/${PRODUCT_VERSION}/${BUILD_ARTIFACTS_FILE}"
 function sendSuccessfulJobEmail {
   echo "Sending job success email"
 
   cat <<EOF >${EMAIL_SUBJECT}
-Build for version ${CONCOURSE_VERSION} of Apache Geode succeeded.
+Build for version ${PRODUCT_VERSION} of Apache Geode succeeded.
 EOF
 
   cat <<EOF >${EMAIL_BODY}
 =================================================================================================
 
-The build job for Apache Geode version ${CONCOURSE_VERSION} has completed successfully.
+The build job for Apache Geode version ${PRODUCT_VERSION} has completed successfully.
 
 
 Build artifacts are available at:
@@ -110,13 +111,13 @@ function sendFailureJobEmail {
   echo "Sending job failure email"
 
   cat <<EOF >${EMAIL_SUBJECT}
-Build for version ${CONCOURSE_VERSION} of Apache Geode failed.
+Build for version ${PRODUCT_VERSION} of Apache Geode failed.
 EOF
 
   cat <<EOF >${EMAIL_BODY}
 =================================================================================================
 
-The build job for Apache Geode version ${CONCOURSE_VERSION} has failed.
+The build job for Apache Geode version ${PRODUCT_VERSION} has failed.
 
 
 Build artifacts are available at:
@@ -149,7 +150,7 @@ printf "\033[92mhttp://${TEST_RESULTS_DESTINATION}\033[0m\n"
 printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\033[0m\n"
 printf "\n"
 
-tar zcf ${DEST_DIR}/geodefiles-${CONCOURSE_VERSION}.tgz geode
+tar zcf ${DEST_DIR}/geodefiles-${PRODUCT_VERSION}.tgz geode
 printf "\033[92mFull build artifacts from this job are available at:\033[0m\n"
 printf "\n"
 printf "\033[92mhttp://${ARCHIVE_DESTINATION}\033[0m\n"
