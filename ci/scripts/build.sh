@@ -19,11 +19,13 @@
 
 
 set -e
+ROOT_DIR=$(pwd)
 BUILD_DATE=$(date +%s)
 EMAIL_SUBJECT="results/subject"
 EMAIL_BODY="results/body"
 
-GEODE_BUILD_VERSION_FILE=geode-build-version/number
+GEODE_BUILD_VERSION_FILE=${ROOT_DIR}/geode-build-version/number
+GEODE_RESULTS_VERSION_FILE=${ROOT_DIR}/results/number
 GEODE_BUILD_VERSION_NUMBER=$(grep "versionNumber *=" geode/gradle.properties | awk -F "=" '{print $2}' | tr -d ' ')
 
 if [ ! -e "${GEODE_BUILD_VERSION_FILE}" ]; then
@@ -43,18 +45,17 @@ if [ -z ${GEODE_BUILD_VERSION_NUMBER+x} ]; then
   echo "gradle.properties does not seem to contain a valid versionNumber. Please check the source tree."
   exit 1
 fi
-ROOT_DIR=$(pwd)
 
 CONCOURSE_VERSION=$(cat ${GEODE_BUILD_VERSION_FILE})
 CONCOURSE_PRODUCT_VERSION=${CONCOURSE_VERSION%%-*}
-PRODUCT_VERSION=${GEODE_BUILD_VERSION_NUMBER}
+GEODE_PRODUCT_VERSION=${GEODE_BUILD_VERSION_NUMBER}
 CONCOURSE_BUILD_SLUG=${CONCOURSE_VERSION##*-}
 BUILD_ID=${CONCOURSE_VERSION##*.}
-FULL_PRODUCT_VERSION=${PRODUCT_VERSION}-${CONCOURSE_BUILD_SLUG}
-echo -n "${FULL_PRODUCT_VERSION}" > ${GEODE_BUILD_VERSION_FILE}
+FULL_PRODUCT_VERSION=${GEODE_PRODUCT_VERSION}-${CONCOURSE_BUILD_SLUG}
+echo -n "${FULL_PRODUCT_VERSION}" > ${GEODE_RESULTS_VERSION_FILE}
 
 echo "Concourse VERSION is ${CONCOURSE_VERSION}"
-echo "Product VERSION is ${PRODUCT_VERSION}"
+echo "Geode product VERSION is ${GEODE_PRODUCT_VERSION}"
 echo "Build ID is ${BUILD_ID}"
 
 printf "\nUsing the following JDK:"
@@ -76,12 +77,10 @@ GRADLE_EXIT_STATUS=$?
 set -e
 
 popd
-TEST_RESULTS_DESTINATION="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${PRODUCT_VERSION}/build/${BUILD_DATE}/"
-ARCHIVE_DESTINATION="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/geodefiles-${PRODUCT_VERSION}.tgz"
-URL_PATH="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${PRODUCT_VERSION}/"
-ARTIFACTS_PATH="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/geodefiles-${PRODUCT_VERSION}.tgz"
-BUILD_ARTIFACTS_FILE=geode-build-artifacts-${PRODUCT_VERSION}.tgz
-BUILD_ARTIFACTS_DESTINATION="files.apachegeode-ci.info/builds/${PRODUCT_VERSION}/${BUILD_ARTIFACTS_FILE}"
+TEST_RESULTS_DESTINATION="files.apachegeode-ci.info/test-results/${MAINTENANCE_VERSION}/${FULL_PRODUCT_VERSION}/"
+ARCHIVE_DESTINATION="files.apachegeode-ci.info/artifacts/${MAINTENANCE_VERSION}/geodefiles-${FULL_PRODUCT_VERSION}.tgz"
+BUILD_ARTIFACTS_FILENAME=geode-build-artifacts-${FULL_PRODUCT_VERSION}.tgz
+BUILD_ARTIFACTS_DESTINATION="files.apachegeode-ci.info/builds/${FULL_PRODUCT_VERSION}/${BUILD_ARTIFACTS_FILENAME}"
 function sendSuccessfulJobEmail {
   echo "Sending job success email"
 
@@ -92,7 +91,7 @@ EOF
   cat <<EOF >${EMAIL_BODY}
 =================================================================================================
 
-The build job for Apache Geode version ${PRODUCT_VERSION} has completed successfully.
+The build job for Apache Geode version ${FULL_PRODUCT_VERSION} has completed successfully.
 
 
 Build artifacts are available at:
@@ -117,7 +116,7 @@ EOF
   cat <<EOF >${EMAIL_BODY}
 =================================================================================================
 
-The build job for Apache Geode version ${PRODUCT_VERSION} has failed.
+The build job for Apache Geode version ${FULL_PRODUCT_VERSION} has failed.
 
 
 Build artifacts are available at:
@@ -150,7 +149,7 @@ printf "\033[92mhttp://${TEST_RESULTS_DESTINATION}\033[0m\n"
 printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\033[0m\n"
 printf "\n"
 
-tar zcf ${DEST_DIR}/geodefiles-${PRODUCT_VERSION}.tgz geode
+tar zcf ${DEST_DIR}/geodefiles-${FULL_PRODUCT_VERSION}.tgz geode
 printf "\033[92mFull build artifacts from this job are available at:\033[0m\n"
 printf "\n"
 printf "\033[92mhttp://${ARCHIVE_DESTINATION}\033[0m\n"
@@ -171,9 +170,9 @@ tar cf - -T ${directories_file} | (cd ${BUILD_ARTIFACTS_DIR}/progress; tar xpf -
 popd
 
 pushd ${BUILD_ARTIFACTS_DIR}
-tar zcf ${DEST_DIR}/${BUILD_ARTIFACTS_FILE} .
+tar zcf ${DEST_DIR}/${BUILD_ARTIFACTS_FILENAME} .
 popd
-gsutil -q cp ${DEST_DIR}/${BUILD_ARTIFACTS_FILE} gs://${BUILD_ARTIFACTS_DESTINATION}
+gsutil -q cp ${DEST_DIR}/${BUILD_ARTIFACTS_FILENAME} gs://${BUILD_ARTIFACTS_DESTINATION}
 printf "\033[92mBuild artifacts from this job are available at:\033[0m\n"
 printf "\n"
 printf "\033[92mhttp://${BUILD_ARTIFACTS_DESTINATION}\033[0m\n"

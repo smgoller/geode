@@ -105,4 +105,4 @@ jobs:
               file: built-geode/geodefiles-*.tgz
           - put: geode-build-version
             params:
-              file: geode-build-version/number
+              file: results/number
