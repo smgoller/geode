@@ -153,7 +153,7 @@ printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 printf "\n"
 
 tar zcf ${DEST_DIR}/geodefiles-${FULL_PRODUCT_VERSION}.tgz geode
-gsutil cp ${DEST_DIR}/geodefiles-${FULL_PRODUCT_VERSION}.tgz gs://${FULL_BUILD_ARTIFACTS_DESTINATION}
+gsutil cp ${DEST_DIR}/geodefiles-${FULL_PRODUCT_VERSION}.tgz gs://${FULL_BUILD_ARCHIVE_DESTINATION}
 cp -r geode/geode-assembly/build/distributions ${BUILD_ARTIFACTS_DIR}/
 cp -r geode/build/reports/rat ${BUILD_ARTIFACTS_DIR}/
 cp -r geode/build/reports/combined ${BUILD_ARTIFACTS_DIR}/
