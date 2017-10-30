@@ -19,6 +19,7 @@
 
 
 set -e
+set -x
 ROOT_DIR=$(pwd)
 BUILD_DATE=$(date +%s)
 EMAIL_SUBJECT="results/subject"
