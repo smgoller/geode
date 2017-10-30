@@ -152,10 +152,7 @@ printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 printf "\n"
 
 tar zcf ${DEST_DIR}/geodefiles-${FULL_PRODUCT_VERSION}.tgz geode
-printf "\033[92mbuild artifacts from this job are available at:\033[0m\n"
-printf "\n"
-printf "\033[92mhttp://${BUILD_ARTIFACTS_DESTINATION}\033[0m\n"
-
+gsutil -q cp ${DEST_DIR}/geodefiles-${FULL_PRODUCT_VERSION}.tgz gs://${FULL_BUILD_ARTIFACTS_DESTINATION}
 cp -r geode/geode-assembly/build/distributions ${BUILD_ARTIFACTS_DIR}/
 cp -r geode/build/reports/rat ${BUILD_ARTIFACTS_DIR}/
 cp -r geode/build/reports/combined ${BUILD_ARTIFACTS_DIR}/
