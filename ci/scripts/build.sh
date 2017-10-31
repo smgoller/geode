@@ -27,6 +27,7 @@ EMAIL_BODY="results/body"
 GEODE_BUILD_VERSION_FILE=${ROOT_DIR}/geode-build-version/number
 GEODE_RESULTS_VERSION_FILE=${ROOT_DIR}/results/number
 GEODE_BUILD_VERSION_NUMBER=$(grep "versionNumber *=" geode/gradle.properties | awk -F "=" '{print $2}' | tr -d ' ')
+GEODE_BUILD_DIR=/tmp/geode-build
 
 if [ ! -e "${GEODE_BUILD_VERSION_FILE}" ]; then
   echo "${GEODE_BUILD_VERSION_FILE} file does not exist. Concourse is probably not configured correctly."
@@ -65,12 +66,15 @@ printf "\n\n"
 gcloud config set account ${SERVICE_ACCOUNT}
 
 export TERM=${TERM:-dumb}
-export DEST_DIR=$(pwd)/built-geode
+export DEST_DIR=${ROOT_DIR}/built-geode
 export TMPDIR=${DEST_DIR}/tmp
 mkdir -p ${TMPDIR}
 export BUILD_ARTIFACTS_DIR=${DEST_DIR}/test-artifacts
 mkdir -p ${BUILD_ARTIFACTS_DIR}
-pushd geode
+
+ln -s ${ROOT_DIR}/geode ${GEODE_BUILD_DIR}
+
+pushd ${GEODE_BUILD_DIR}
 set +e
 ./gradlew --no-daemon -PbuildId=${BUILD_ID} --system-prop "java.io.tmpdir=${TMPDIR}" build
 GRADLE_EXIT_STATUS=$?
