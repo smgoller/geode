@@ -87,7 +87,9 @@ jobs:
         image_resource:
           type: docker-image
           source:
-            repository: smgoller/apachegeode-build-concourse
+            username: ((!docker-username))
+            password: ((!docker-password))
+            repository: gcr.io/apachegeode-ci/apachegeode-build-concourse
             tag: latest
         params:
           MAINTENANCE_VERSION: ((!maintenance-version))
