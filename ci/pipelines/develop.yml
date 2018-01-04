@@ -50,8 +50,8 @@ resources:
   type: git
   source:
     depth: 1
-    uri: https://github.com/apache/geode.git
-    branch: develop
+    uri: https://github.com/smgoller/geode.git
+    branch: smgoller-ci
     paths:
     - ci/*
 - name: geode-build-version
