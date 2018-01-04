@@ -54,13 +54,13 @@ resources:
     branch: smgoller-ci
     paths:
     - ci/*
-  - name: geode-examples
-    type: git
-    source:
-      uri: git@github.com:apache/geode-examples.git
-      branch: ((!geode-examples-branch))
-      private_key: ((!gemfire-ci-private-key))
-      depth: 10
+- name: geode-examples
+  type: git
+  source:
+    uri: git@github.com:apache/geode-examples.git
+    branch: ((!geode-examples-branch))
+    private_key: ((!gemfire-ci-private-key))
+    depth: 10
 - name: geode-build-version
   type: semver
   source:
