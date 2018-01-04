@@ -57,9 +57,8 @@ resources:
 - name: geode-examples
   type: git
   source:
-    uri: git@github.com:apache/geode-examples.git
-    branch: ((!geode-examples-branch))
-    private_key: ((!gemfire-ci-private-key))
+    uri: https://github.com/apache/geode-examples.git
+    branch: develop
     depth: 10
 - name: geode-build-version
   type: semver
