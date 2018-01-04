@@ -54,6 +54,13 @@ resources:
     branch: smgoller-ci
     paths:
     - ci/*
+  - name: geode-examples
+    type: git
+    source:
+      uri: git@github.com:apache/geode-examples.git
+      branch: ((!geode-examples-branch))
+      private_key: ((!gemfire-ci-private-key))
+      depth: 10
 - name: geode-build-version
   type: semver
   source:
@@ -388,16 +395,18 @@ jobs:
       - get: geode-ci
       - get: geode-build-version
         passed: [Build]
+      - get: geode-examples
       - get: docker-test-image
         params:
           rootfs: true
-    - task: runtests
+    - task: testexamples
       privileged: true
       timeout: 7h
       config:
         inputs:
           - name: geode
           - name: geode-ci
+          - name: geode-examples
           - name: docker-test-image
           - name: geode-build-version
         platform: linux
@@ -412,7 +421,7 @@ jobs:
           args:
           - buildExamples
           - testexamplesfiles
-          path: geode-ci/ci/scripts/test-run.sh
+          path: geode-ci/ci/scripts/build-examples.sh
       on_failure:
         aggregate:
           - put: send-notification-email
@@ -438,7 +447,7 @@ jobs:
                args:
                - buildExamples
                - testexamplesfiles
-               path: geode-ci/ci/scripts/test-archive.sh
+               path: geode-ci/ci/scripts/build-examples.sh
 
 - name: UpdatePassingRef
   serial: true
