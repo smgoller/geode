@@ -427,26 +427,6 @@ jobs:
             params:
               subject: built-geode/subject
               body: built-geode/body
-      ensure:
-         aggregate:
-         - task: archive-results
-           config:
-             inputs:
-               - name: geode
-               - name: geode-ci
-               - name: geode-build-version
-               - name: built-geode
-             platform: linux
-             image_resource: *docker-geode-build-image
-             params:
-               MAINTENANCE_VERSION: ((!maintenance-version))
-               SERVICE_ACCOUNT: ((!concourse-gcp-account))
-               PUBLIC_BUCKET: ((!public-bucket))
-             run:
-               args:
-               - buildExamples
-               - testexamplesfiles
-               path: geode-ci/ci/scripts/build-examples.sh
 
 - name: UpdatePassingRef
   serial: true
