@@ -45,7 +45,7 @@ resources:
   type: git
   source:
     uri: https://github.com/apache/geode.git
-    branch: develop
+    branch: release/1.5.0
     ignore_paths:
     - ci/*
 - name: geode-ci
@@ -53,7 +53,7 @@ resources:
   source:
     depth: 1
     uri: https://github.com/apache/geode.git
-    branch: develop
+    branch: release/1.5.0
     paths:
     - ci/*
 - name: geode-examples
@@ -69,13 +69,13 @@ resources:
     bucket: ((!concourse-bucket))
     key: ((!version-key))
     json_key: ((!concourse-gcp-key))
-    initial_version: 1.3.0
+    initial_version: 1.5.0
 - name: geode-build-artifact
   type: gcs-resource
   source:
     bucket: ((!public-bucket))
     json_key: ((!concourse-gcp-key))
-    regexp: artifacts/develop/geodefiles-(.*).tgz
+    regexp: artifacts/release/1.5.0/geodefiles-(.*).tgz
 - name: send-notification-email
   type: email
   source:
