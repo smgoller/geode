@@ -21,8 +21,8 @@ resources:
 - name: apachegeode-build-concourse-dockerfile
   type: git
   source:
-    uri: https://github.com/apache/geode.git
-    branch: develop
+    uri: https://github.com/smgoller/geode.git
+    branch: smgoller-ci
     paths:
     - ci/docker/*
 
