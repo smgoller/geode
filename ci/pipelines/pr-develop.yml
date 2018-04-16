@@ -1,0 +1,111 @@
+---
+resource_types:
+#  - name: email
+#    type: docker-image
+#    source:
+#      repository: pcfseceng/email-resource
+#      tag: latest
+#      email: ((!docker-email))
+#      username: ((!docker-username))
+#      password: ((!docker-password)pr-develop)
+
+- name: pull-request
+  type: docker-image
+  source:
+    repository: jtarchie/pr
+
+image_resource: &docker-geode-build-image
+  type: docker-image
+  source:
+    username: ((!docker-username))
+    password: ((!docker-password))
+    repository: gcr.io/apachegeode-ci/((!docker-image-name))
+    tag: latest
+
+
+resources:
+- name: geode-build-version
+  type: semver
+  source:
+    driver: gcs
+    bucket: ((!concourse-bucket))
+    key: ((!version-key))
+    json_key: ((!concourse-gcp-key))
+    initial_version: 1.3.0
+
+- name: geode
+  type: pull-request
+  source:
+    access_token: f70d1818bbe001713fe70296f34205b2419be62b
+    repo: "robbadler/geode"
+    base: develop
+    ignore_paths:
+    - geode-docs/*
+    - geode-book/*
+
+
+jobs:
+
+- name: Build
+  serial: false
+  public: true
+  plan:
+  - aggregate:
+    - get: geode-build-version
+      params: {pre: build}
+    - get: geode
+      trigger: true
+      version: every
+      params:
+        fetch_merge: false
+        git:
+          depth: 1
+#  - get: geode-unmerged-request
+#    resource: geode
+#    params:
+#      git:
+#        depth: 1
+  - aggregate:
+    - put: geode
+      params:
+        path: geode
+        status: pending
+
+    - task: build
+      config:
+        platform: linux
+        image_resource: *docker-geode-build-image
+        inputs:
+        - name: geode
+        - name: geode-build-version
+        outputs:
+        - name: built-geode
+        - name: results
+        params:
+          MAINTENANCE_VERSION: ((!maintenance-version))
+          SERVICE_ACCOUNT: ((!concourse-gcp-account))
+          PUBLIC_BUCKET: "robert-pr-test"
+        run:
+          path: echo
+          args: ["fake", "run"]
+#          path: geode/ci/scripts/build.sh
+      on_failure:
+        aggregate:
+        - put: geode
+          params:
+            path: geode
+            status: failure
+      on_success:
+        aggregate:
+        - put: geode
+          params:
+            path: geode
+            status: success
+##        ensure:
+##          aggregate:
+##            - put: geode-build-artifact
+##              params:
+##                file: built-geode/geodefiles-*.tgz
+##            - put: geode-build-version
+##              params:
+##                file: results/number
