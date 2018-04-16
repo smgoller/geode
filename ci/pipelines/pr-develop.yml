@@ -57,18 +57,19 @@ jobs:
       trigger: true
       version: every
       params:
-        fetch_merge: false
-        git:
-          depth: 1
-#  - get: geode-unmerged-request
-#    resource: geode
-#    params:
+        fetch_merge: true
+#        git:
+#          depth: 100
+  - get: geode-unmerged-request
+    resource: geode
+    params:
+      fetch_merge: false
 #      git:
 #        depth: 1
   - aggregate:
     - put: geode
       params:
-        path: geode
+        path: geode-unmerged-request
         status: pending
 
     - task: build
@@ -93,13 +94,13 @@ jobs:
         aggregate:
         - put: geode
           params:
-            path: geode
+            path: geode-unmerged-request
             status: failure
       on_success:
         aggregate:
         - put: geode
           params:
-            path: geode
+            path: geode-unmerged-request
             status: success
 ##        ensure:
 ##          aggregate:
