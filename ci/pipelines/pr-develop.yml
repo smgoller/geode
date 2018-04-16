@@ -58,8 +58,8 @@ jobs:
       version: every
       params:
         fetch_merge: true
-#        git:
-#          depth: 100
+        git:
+          depth: 100
   - get: geode-unmerged-request
     resource: geode
     version: every
