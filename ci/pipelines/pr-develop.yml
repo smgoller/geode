@@ -24,15 +24,12 @@ image_resource: &docker-geode-build-image
 
 
 resources:
-- name: geode-build-version
-  type: semver
+- name: docker-test-image
+  type: docker-image
   source:
-    driver: gcs
-    bucket: ((!concourse-bucket))
-    key: ((!version-key))
-    json_key: ((!concourse-gcp-key))
-    initial_version: 1.3.0
-
+    username: ((!docker-username))
+    password: ((!docker-password))
+    repository: gcr.io/apachegeode-ci/((!docker-image-name))
 - name: geode
   type: pull-request
   check_every: 10s
@@ -43,7 +40,26 @@ resources:
     ignore_paths:
     - geode-docs/*
     - geode-book/*
-
+#- name: geode-examples
+#  type: git
+#  source:
+#    uri: https://github.com/apache/geode-examples.git
+#    branch: develop
+#    depth: 10
+- name: geode-build-version
+  type: semver
+  source:
+    driver: gcs
+    bucket: ((!concourse-bucket))
+    key: ((!version-key))
+    json_key: ((!concourse-gcp-key))
+    initial_version: 1.3.0
+#- name: geode-build-artifact
+#  type: gcs-resource
+#  source:
+#    bucket: ((!public-bucket))
+#    json_key: ((!concourse-gcp-key))
+#    regexp: artifacts/develop/geodefiles-(.*).tgz
 
 jobs:
 
@@ -66,8 +82,6 @@ jobs:
     version: every
     params:
       fetch_merge: false
-#      git:
-#        depth: 1
   - aggregate:
     - put: geode
       params:
@@ -89,21 +103,13 @@ jobs:
           SERVICE_ACCOUNT: ((!concourse-gcp-account))
           PUBLIC_BUCKET: "robert-pr-test"
         run:
-          path: echo
-          args: ["fake", "run"]
-#          path: geode/ci/scripts/build.sh
+          path: geode/ci/scripts/build.sh
       on_failure:
         aggregate:
         - put: geode
           params:
             path: geode-unmerged-request
             status: failure
-      on_success:
-        aggregate:
-        - put: geode
-          params:
-            path: geode-unmerged-request
-            status: success
 ##        ensure:
 ##          aggregate:
 ##            - put: geode-build-artifact
@@ -112,3 +118,99 @@ jobs:
 ##            - put: geode-build-version
 ##              params:
 ##                file: results/number
+
+- name: DistributedTest
+  serial: true
+  public: true
+  plan:
+    - aggregate:
+      - get: geode
+        passed: [Build]
+        trigger: true
+      - get: geode-build-version
+        passed: [Build]
+      - get: docker-test-image
+        params:
+          rootfs: true
+    - get: geode-unmerged-request
+      resource: geode
+      version: every
+      params:
+        fetch_merge: false
+    - task: runtests
+      tags: [large]
+      privileged: true
+      timeout: 8h
+      config:
+        inputs:
+          - name: geode
+          - name: docker-test-image
+          - name: geode-build-version
+        platform: linux
+        outputs:
+          - name: built-geode
+        image_resource: *docker-geode-build-image
+        params:
+          MAINTENANCE_VERSION: ((!maintenance-version))
+          SERVICE_ACCOUNT: ((!concourse-gcp-account))
+          PUBLIC_BUCKET: ((!public-bucket))
+          PARALLEL_DUNIT: true
+          DUNIT_PARALLEL_FORKS: 7
+          CALL_STACK_TIMEOUT: 25200
+        run:
+          args:
+          - distributedTest
+          - distributedtestfiles
+          path: geode-ci/ci/scripts/test-run.sh
+      on_failure:
+        aggregate:
+        - put: geode
+          params:
+            path: geode-unmerged-request
+            status: failure
+#        - put: send-notification-email
+#          params:
+#            subject: built-geode/subject
+#             body: built-geode/body
+      on_success:
+        aggregate:
+        - put: geode
+          params:
+            path: geode-unmerged-request
+            status: success
+      ensure:
+#         aggregate:
+#         - task: archive-results
+#           config:
+#             inputs:
+#               - name: geode
+#               - name: geode-build-version
+#               - name: built-geode
+#             platform: linux
+#             image_resource: *docker-geode-build-image
+#             params:
+#               MAINTENANCE_VERSION: ((!maintenance-version))
+#               SERVICE_ACCOUNT: ((!concourse-gcp-account))
+#               PUBLIC_BUCKET: ((!public-bucket))
+#             run:
+#               args:
+#               - distributedTest
+#               - distributedtestfiles
+#               path: geode-ci/ci/scripts/test-archive.sh
+#
+
+
+groups:
+- name: staging
+  jobs:
+  - Build
+  - DistributedTest
+#  - AcceptanceTest
+#  - IntegrationTest
+#  - FlakyTest
+#  - TestExamples
+#  - UpdatePassingRef
+#- name: UITests
+#  jobs:
+#  - Build
+#  - UITests
