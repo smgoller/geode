@@ -120,7 +120,7 @@ jobs:
 ##                file: results/number
 
 - name: DistributedTest
-  serial: true
+  serial: false
   public: true
   plan:
     - aggregate:
