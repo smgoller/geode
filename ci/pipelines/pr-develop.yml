@@ -35,6 +35,7 @@ resources:
 
 - name: geode
   type: pull-request
+  check_every: 10s
   source:
     access_token: f70d1818bbe001713fe70296f34205b2419be62b
     repo: "robbadler/geode"
