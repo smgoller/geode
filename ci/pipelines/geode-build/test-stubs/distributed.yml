@@ -1,0 +1,11 @@
+metadata:
+  job:
+    name: DistributedTest
+    gradle_task: distributedTest
+    artifact_slug: distributedtestfiles
+    dunit:
+      parallel: true
+      forks: 7
+    call_stack_timeout: 25200
+    timeout: 8h
+    size: [large]

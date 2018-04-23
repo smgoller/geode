@@ -1,0 +1,11 @@
+metadata:
+  job:
+    name: FlakyTest
+    gradle_task: flakyTest
+    artifact_slug: flakytestfiles
+    dunit:
+      parallel: false
+      forks: 0
+    call_stack_timeout: 25200
+    timeout: 8h
+    size: []

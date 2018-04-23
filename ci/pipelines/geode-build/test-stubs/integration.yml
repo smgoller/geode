@@ -1,0 +1,11 @@
+metadata:
+  job:
+    name: IntegrationTest
+    gradle_task: integrationTest
+    artifact_slug: integrationtestfiles
+    dunit:
+      parallel: true
+      forks: 1
+    call_stack_timeout: 25200
+    timeout: 8h
+    size: []
