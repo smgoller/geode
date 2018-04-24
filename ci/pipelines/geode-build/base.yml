@@ -38,7 +38,7 @@ resources:
 - name: geode
   type: git
   source:
-    uri: https://github.com/smgoller/geode.git
+    uri: https://github.com/apache/geode.git
     branch: (( grab metadata.geode-build-branch ))
     ignore_paths:
     - ci/*
@@ -46,7 +46,7 @@ resources:
   type: git
   source:
     depth: 1
-    uri: https://github.com/smgoller/geode.git
+    uri: https://github.com/apache/geode.git
     branch: (( grab metadata.geode-build-branch ))
     paths:
     - ci/*
