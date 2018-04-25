@@ -35,21 +35,21 @@ resources:
 - name: geode-develop-pipeline
   type: git
   source:
-    uri: https://github.com/apache/geode.git
+    uri: https://github.com/smgoller/geode.git
     branch: ((!geode-build-branch))
     paths:
     - ci/*
 - name: geode-docker-images-pipeline
   type: git
   source:
-    uri: https://github.com/apache/geode.git
+    uri: https://github.com/smgoller/geode.git
     branch: ((!geode-build-branch))
     paths:
     - ci/pipelines/docker-images.yml
 - name: geode-metrics-pipeline
   type: git
   source:
-    uri: https://github.com/apache/geode.git
+    uri: https://github.com/smgoller/geode.git
     branch: ((!geode-build-branch))
     paths:
     - ci/pipelines/metrics.yml
