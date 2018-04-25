@@ -56,8 +56,7 @@ RUN chmod +x /usr/local/bin/tini \
   &&  wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub \
   &&  wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.27-r0/glibc-2.27-r0.apk \
   &&  apk add glibc-2.27-r0.apk \
-  && pip install docker-compose \
-  && chmod +x cache_dependencies.sh \
+  && pip2 install docker-compose \
   && curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
   && tar xzf google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz -C / \
   && rm google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
@@ -80,3 +79,11 @@ RUN chmod +x /usr/local/bin/tini \
     go \
     musl-dev \
   && rm -rf /geode
+ADD entrypoint.sh /entrypoint.sh
+RUN apk add --no-cache openssh \
+      && sed -i s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config \
+      && echo "root:ribbon7apple" | chpasswd \
+      && chmod +x /entrypoint.sh
+
+#ENTRYPOINT ["/entrypoint.sh"]
+EXPOSE 2222
