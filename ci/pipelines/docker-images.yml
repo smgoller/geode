@@ -21,8 +21,8 @@ resources:
 - name: apachegeode-build-concourse-dockerfile
   type: git
   source:
-    uri: https://github.com/apache/geode.git
-    branch: develop
+    uri: https://github.com/smgoller/geode.git
+    branch: alpine
     paths:
     - ci/docker/*
 
@@ -31,13 +31,13 @@ resources:
   source:
     username: ((!docker-username))
     password: ((!docker-password))
-    repository: gcr.io/apachegeode-ci/((!docker-image-name))
+    repository: gcr.io/apachegeode-ci/alpine-builder
 
 - name: openjdk8-docker-image
   type: docker-image
   source:
     repository: openjdk
-    tag: 8
+    tag: 8-jdk-alpine
     skip_download: true
 jobs:
 # apachegeode-build-concourse
