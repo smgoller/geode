@@ -35,6 +35,7 @@ RUN chmod +x /usr/local/bin/tini \
   && chmod +x /usr/local/bin/initdocker \
   && apk add --no-cache \
     bash \
+    chromium \
     chromium-chromedriver \
     curl \
     docker \
