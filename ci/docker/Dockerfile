@@ -35,7 +35,7 @@ RUN chmod +x /usr/local/bin/tini \
   && chmod +x /usr/local/bin/initdocker \
   && apk add --no-cache \
     bash \
-    chromium \
+    chromium-chromedriver \
     curl \
     docker \
     git \
@@ -67,14 +67,6 @@ RUN chmod +x /usr/local/bin/tini \
   && go build -o /usr/local/bin/tini-wrapper ./tini-wrapper.go \
   && curl -Lo /usr/local/bin/dunit-progress https://github.com/jdeppe-pivotal/progress-util/releases/download/0.2/progress.linux \
   && chmod +x /usr/local/bin/dunit-progress \
-  && wget --no-verbose -O /tmp/chromedriver_linux64.zip https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip \
-  && rm -rf /opt/selenium/chromedriver \
-  && mkdir -p /opt/selenium \
-  && unzip /tmp/chromedriver_linux64.zip -d /opt/selenium \
-  && rm /tmp/chromedriver_linux64.zip \
-  && mv /opt/selenium/chromedriver /opt/selenium/chromedriver-$CHROME_DRIVER_VERSION \
-  && chmod 755 /opt/selenium/chromedriver-$CHROME_DRIVER_VERSION \
-  && ln -fs /opt/selenium/chromedriver-$CHROME_DRIVER_VERSION /usr/bin/chromedriver \
   && apk del \
     go \
     musl-dev \
