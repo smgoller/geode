@@ -82,6 +82,10 @@ RUN chmod +x /usr/local/bin/tini \
     /var/lib/apt/lists/* \
     /var/cache/apk/*
 
+RUN git clone https://github.com/tianon/cgroupfs-mount \
+  && mv cgroupfs-mount/cgroupfs* /usr/bin/ \
+  && rm -rf cgroupfs-mount
+
 ADD entrypoint.sh /entrypoint.sh
 RUN apk add --no-cache openssh \
       && sed -i s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config \
