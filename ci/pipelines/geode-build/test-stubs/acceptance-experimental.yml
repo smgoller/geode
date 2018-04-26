@@ -24,4 +24,4 @@ metadata:
       forks: 0
     call_stack_timeout: 25200
     timeout: 8h
-    size: [vanilla]
+    size: [experimental]
