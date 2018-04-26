@@ -87,6 +87,7 @@ groups:
   - Build
   - DistributedTest
   - AcceptanceTest
+  - AcceptanceTestExperimental
   - IntegrationTest
   - FlakyTest
   - TestExamples

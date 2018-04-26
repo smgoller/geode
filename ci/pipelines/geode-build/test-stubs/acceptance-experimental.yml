@@ -16,7 +16,7 @@
 
 metadata:
   job:
-    name: AcceptanceTest
+    name: AcceptanceTestExperimental
     gradle_task: :geode-assembly:acceptanceTest geode-connectors:acceptanceTest
     artifact_slug: acceptancetestfiles
     dunit:
