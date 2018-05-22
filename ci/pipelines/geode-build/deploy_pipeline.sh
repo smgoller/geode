@@ -75,7 +75,7 @@ ${SPRUCE} merge --prune metadata \
 TARGET="geode"
 
 TEAM="staging"
-if [[ "${GEODE_BRANCH}" == "develop" ]] || [[ ${GEODE_BRANCH} =~ ^support/* ]]; then
+if [[ "${GEODE_BRANCH}" == "develop" ]] || [[ ${GEODE_BRANCH} =~ ^release/* ]]; then
   TEAM="main"
 fi
 
