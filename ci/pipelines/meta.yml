@@ -29,7 +29,7 @@ resources:
     target: https://concourse.apachegeode-ci.info
     insecure: "true"
     teams:
-    - name: main
+    - name: staging
       username: ((!concourse-username))
       password: ((!concourse-password))
 - name: geode-develop-pipeline
@@ -94,7 +94,7 @@ jobs:
     params:
       pipelines:
       - name: docker-images
-        team: main
+        team: staging
         config_file: geode-docker-images-pipeline/ci/pipelines/docker-images.yml
 - name: set-metrics-pipeline
   serial: true
@@ -106,5 +106,5 @@ jobs:
     params:
       pipelines:
       - name: develop-metrics
-        team: main
+        team: staging
         config_file: geode-metrics-pipeline/ci/pipelines/metrics.yml

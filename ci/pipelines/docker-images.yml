@@ -31,7 +31,7 @@ resources:
   source:
     username: ((!docker-username))
     password: ((!docker-password))
-    repository: gcr.io/apachegeode-ci/alpine-builder
+    repository: gcr.io/apachegeode-ci/alpine-builder-staging
 
 - name: openjdk8-docker-image
   type: docker-image
