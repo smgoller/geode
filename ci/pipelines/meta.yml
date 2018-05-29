@@ -32,7 +32,7 @@ resources:
     - name: staging
       username: ((!concourse-username))
       password: ((!concourse-password))
-- name: geode-develop-pipeline
+- name: geode-pipeline
   type: git
   source:
     uri: https://github.com/smgoller/geode.git
