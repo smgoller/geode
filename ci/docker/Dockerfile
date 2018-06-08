@@ -13,42 +13,47 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-FROM openjdk:8
+FROM openjdk:8-jdk-slim
 ENTRYPOINT []
 
-ARG CHROME_DRIVER_VERSION=2.35
-ENV SPRUCE_VERSION 1.17.0
+ENV CHROME_DRIVER_VERSION=2.39
+ENV SPRUCE_VERSION 1.18.0
+ENV TINI_VERSION 0.18.0
 ENV GRADLE_USER_HOME /usr/local/maven_files
 
 WORKDIR /tmp/work
 
 ADD https://github.com/geofffranks/spruce/releases/download/v${SPRUCE_VERSION}/spruce-linux-amd64 /usr/local/bin/spruce
-ADD docker.list /etc/apt/sources.list.d/
-ADD https://github.com/krallin/tini/releases/download/v0.14.0/tini-static-amd64 /usr/local/bin/tini
+ADD https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini-static-amd64 /usr/local/bin/tini
 ADD tini-wrapper.go .
 ADD ./initdocker /usr/local/bin/initdocker
-ADD cache_dependencies.sh cache_dependencies.sh
 
-RUN chmod +x /usr/local/bin/tini \
+RUN  chmod +x /usr/local/bin/tini \
   && chmod +x /usr/local/bin/spruce \
   && chmod +x /usr/local/bin/initdocker \
-  && chmod +x cache_dependencies.sh \
   && apt-get update \
-  && apt-get install -y --no-install-recommends lsb-release \
-	&& echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
+  && apt-get install -y --no-install-recommends \
+      apt-transport-https \
+      curl \
+      dirmngr \
+      gnupg2 \
+      lsb-release \
+  && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
   && echo "deb http://packages.cloud.google.com/apt cloud-sdk-$(lsb_release -c -s) main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
+  && echo "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee -a /etc/apt/sources.list.d/docker.list \
   && curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
-  && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
-  && apt-key adv --keyserver hkp://pgp.mit.edu --recv-keys 58118E89F3A912897C070ADBF76221572C52609D \
+  && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - \
   && apt-get update \
   && apt-get purge lxc-docker \
   && apt-get install -y --no-install-recommends \
-    apt-transport-https \
     aptitude \
     ca-certificates \
     cgroupfs-mount \
+    docker-ce \
     docker-compose \
-    docker-engine \
+    git \
     golang \
     google-chrome-stable \
     google-cloud-sdk \
@@ -71,7 +76,6 @@ RUN chmod +x /usr/local/bin/tini \
   && mv /opt/selenium/chromedriver /opt/selenium/chromedriver-$CHROME_DRIVER_VERSION \
   && chmod 755 /opt/selenium/chromedriver-$CHROME_DRIVER_VERSION \
   && ln -fs /opt/selenium/chromedriver-$CHROME_DRIVER_VERSION /usr/bin/chromedriver \
-  && ./cache_dependencies.sh \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /tmp/work

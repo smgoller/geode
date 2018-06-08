@@ -23,7 +23,7 @@ ROOT_DIR=$(pwd)
 BUILD_DATE=$(date +%s)
 EMAIL_SUBJECT="results/subject"
 EMAIL_BODY="results/body"
-
+export GRADLE_USER_HOME=${ROOT_DIR}/gradle_cache
 GEODE_BUILD_VERSION_FILE=${ROOT_DIR}/geode-build-version/number
 GEODE_RESULTS_VERSION_FILE=${ROOT_DIR}/results/number
 GEODE_BUILD_VERSION_NUMBER=$(grep "versionNumber *=" geode/gradle.properties | awk -F "=" '{print $2}' | tr -d ' ')

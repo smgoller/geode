@@ -44,6 +44,8 @@ jobs:
         platform: linux
         outputs:
           - name: built-geode
+        caches:
+          - path: gradle_cache
         params:
           MAINTENANCE_VERSION: (( grab metadata.geode-build-branch ))
           SERVICE_ACCOUNT: ((!concourse-gcp-account))
