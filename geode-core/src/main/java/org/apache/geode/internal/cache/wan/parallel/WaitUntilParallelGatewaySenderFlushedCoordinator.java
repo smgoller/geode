@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -63,7 +64,16 @@ public class WaitUntilParallelGatewaySenderFlushedCoordinator
     int callableCount = 0;
     long nanosRemaining = unit.toNanos(timeout);
     long endTime = System.nanoTime() + nanosRemaining;
+
+    //TODO - is this local bucket region set fully populated on recovery at this point??
+    final CountDownLatch recovered = pr.getRedundancyProvider().getAllBucketsRecoveredFromDiskLatch();
+
+    if(recovered != null && !recovered.await(timeout, unit)) {
+      return false;
+    }
+
     Set<BucketRegion> localBucketRegions = getLocalBucketRegions(pr);
+
     for (BucketRegion br : localBucketRegions) {
       // timeout exceeded, do not submit more callables, return localResult false
       if (System.nanoTime() >= endTime) {
@@ -71,6 +81,7 @@ public class WaitUntilParallelGatewaySenderFlushedCoordinator
         break;
       }
       // create and submit callable with updated timeout
+
       Callable<Boolean> callable = createWaitUntilBucketRegionQueueFlushedCallable(
           (BucketRegionQueue) br, nanosRemaining, TimeUnit.NANOSECONDS);
       if (logger.isDebugEnabled()) {
@@ -80,6 +91,10 @@ public class WaitUntilParallelGatewaySenderFlushedCoordinator
       }
       callableFutures.add(service.submit(callable));
       callableCount++;
+
+      //TODO - Are we really waiting for all the results to finish here, or does
+      // this crazy logic have some issues? If this is trying to wait for multiple
+      // parallel tasks, this could use CompletableFuture and be much simpler
       if ((callableCount % CALLABLES_CHUNK_SIZE) == 0
           || callableCount == localBucketRegions.size()) {
         CallablesChunkResults callablesChunkResults =
@@ -115,6 +130,8 @@ public class WaitUntilParallelGatewaySenderFlushedCoordinator
 
   protected WaitUntilBucketRegionQueueFlushedCallable createWaitUntilBucketRegionQueueFlushedCallable(
       BucketRegionQueue br, long timeout, TimeUnit unit) {
+
+    //TODO - use a lambda instead of this separate class?
     return new WaitUntilBucketRegionQueueFlushedCallable(br, timeout, unit);
   }
 
@@ -131,6 +148,7 @@ public class WaitUntilParallelGatewaySenderFlushedCoordinator
     public WaitUntilBucketRegionQueueFlushedCallable(BucketRegionQueue brq, long timeout,
         TimeUnit unit) {
       this.brq = brq;
+      //TODO - is this initialized yet if the bucket is being recovered?
       this.latestQueuedKey = brq.getLatestQueuedKey();
       this.timeout = timeout;
       this.unit = unit;
