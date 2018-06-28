@@ -23,53 +23,8 @@ image_resource: &docker-geode-build-image
     tag: latest
 
 
-resources:
-- name: docker-test-image
-  type: docker-image
-  source:
-    username: ((!docker-username))
-    password: ((!docker-password))
-    repository: gcr.io/apachegeode-ci/((!docker-image-name))
-- name: geode
-  type: pull-request
-  check_every: 10s
-  source:
-    access_token: f70d1818bbe001713fe70296f34205b2419be62b
-    repo: "robbadler/geode"
-    base: develop
-    ignore_paths:
-    - geode-docs/*
-    - geode-book/*
-#- name: geode-examples
-#  type: git
-#  source:
-#    uri: https://github.com/apache/geode-examples.git
-#    branch: develop
-#    depth: 10
-- name: geode-build-version
-  type: semver
-  source:
-    driver: gcs
-    bucket: ((!concourse-bucket))
-    key: ((!version-key))
-    json_key: ((!concourse-gcp-key))
-    initial_version: 1.3.0
-#- name: geode-build-artifact
-#  type: gcs-resource
-#  source:
-#    bucket: ((!public-bucket))
-#    json_key: ((!concourse-gcp-key))
-#    regexp: artifacts/develop/geodefiles-(.*).tgz
-
-jobs:
-
-- name: Build
-  serial: false
-  public: true
-  plan:
+plan: &get-geode-set-pending
   - aggregate:
-    - get: geode-build-version
-      params: {pre: build}
     - get: geode
       trigger: true
       version: every
@@ -86,15 +41,65 @@ jobs:
     - put: geode
       params:
         path: geode-unmerged-request
+        context: $BUILD_JOB_NAME
         status: pending
 
+
+resources:
+- name: docker-test-image
+  type: docker-image
+  source:
+    username: ((!docker-username))
+    password: ((!docker-password))
+    repository: gcr.io/apachegeode-ci/((!docker-image-name))
+- name: geode
+  type: pull-request
+  source:
+    access_token: 9d98dbdc065e55ad7462f646402208510a8e362e
+    repo: "robbadler/geode"
+    base: develop
+    ignore_paths:
+    - geode-docs/*
+    - geode-book/*
+    only_mergeable: true
+
+#- name: geode-build-artifact
+#  type: gcs-resource
+#  source:
+#    bucket: ((!public-bucket))
+#    json_key: ((!concourse-gcp-key))
+#    regexp: artifacts/develop/geodefiles-(.*).tgz
+
+jobs:
+- name: Build
+  serial: false
+  public: true
+  plan:
+  - aggregate:
+    - get: geode
+      trigger: true
+      version: every
+      params:
+        fetch_merge: true
+        git:
+          depth: 100
+  - get: geode-unmerged-request
+    resource: geode
+    version: every
+    params:
+      fetch_merge: false
+  - aggregate:
+    - put: geode
+      params:
+        path: geode-unmerged-request
+        context: $BUILD_JOB_NAME
+        status: pending
     - task: build
       config:
         platform: linux
         image_resource: *docker-geode-build-image
         inputs:
         - name: geode
-        - name: geode-build-version
         outputs:
         - name: built-geode
         - name: results
@@ -103,114 +108,455 @@ jobs:
           SERVICE_ACCOUNT: ((!concourse-gcp-account))
           PUBLIC_BUCKET: "robert-pr-test"
         run:
-          path: geode/ci/scripts/build.sh
+#          path: geode/ci/scripts/build.sh
+          args: ["Not Building..."]
+          path: echo
       on_failure:
         aggregate:
         - put: geode
           params:
             path: geode-unmerged-request
+            context: $BUILD_JOB_NAME
             status: failure
+      on_success:
+        aggregate:
+        - put: geode
+          params:
+            path: geode-unmerged-request
+            context: $BUILD_JOB_NAME
+            status: success
 ##        ensure:
 ##          aggregate:
 ##            - put: geode-build-artifact
 ##              params:
 ##                file: built-geode/geodefiles-*.tgz
-##            - put: geode-build-version
-##              params:
-##                file: results/number
 
 - name: DistributedTest
   serial: false
   public: true
   plan:
     - aggregate:
-      - get: geode
-        passed: [Build]
-        trigger: true
-      - get: geode-build-version
-        passed: [Build]
       - get: docker-test-image
         params:
           rootfs: true
+      - get: geode
+        trigger: true
+        version: every
+        params:
+          fetch_merge: true
+          git:
+            depth: 100
     - get: geode-unmerged-request
       resource: geode
       version: every
       params:
         fetch_merge: false
-    - task: runtests
-      tags: [large]
-      privileged: true
-      timeout: 8h
-      config:
-        inputs:
-          - name: geode
-          - name: docker-test-image
-          - name: geode-build-version
-        platform: linux
-        outputs:
-          - name: built-geode
-        image_resource: *docker-geode-build-image
+    - aggregate:
+      - put: geode
         params:
-          MAINTENANCE_VERSION: ((!maintenance-version))
-          SERVICE_ACCOUNT: ((!concourse-gcp-account))
-          PUBLIC_BUCKET: ((!public-bucket))
-          PARALLEL_DUNIT: true
-          DUNIT_PARALLEL_FORKS: 7
-          CALL_STACK_TIMEOUT: 25200
-        run:
-          args:
-          - distributedTest
-          - distributedtestfiles
-          path: geode-ci/ci/scripts/test-run.sh
-      on_failure:
-        aggregate:
-        - put: geode
+          path: geode-unmerged-request
+          context: $BUILD_JOB_NAME
+          status: pending
+
+      - task: runtests
+        tags: [large]
+        privileged: true
+        timeout: 8h
+        config:
+          inputs:
+            - name: geode
+            - name: docker-test-image
+          platform: linux
+          outputs:
+            - name: built-geode
+          image_resource: *docker-geode-build-image
           params:
-            path: geode-unmerged-request
-            status: failure
-#        - put: send-notification-email
-#          params:
-#            subject: built-geode/subject
-#             body: built-geode/body
-      on_success:
-        aggregate:
-        - put: geode
-          params:
-            path: geode-unmerged-request
-            status: success
-      ensure:
-#         aggregate:
-#         - task: archive-results
-#           config:
-#             inputs:
-#               - name: geode
-#               - name: geode-build-version
-#               - name: built-geode
-#             platform: linux
-#             image_resource: *docker-geode-build-image
-#             params:
-#               MAINTENANCE_VERSION: ((!maintenance-version))
-#               SERVICE_ACCOUNT: ((!concourse-gcp-account))
-#               PUBLIC_BUCKET: ((!public-bucket))
-#             run:
-#               args:
-#               - distributedTest
-#               - distributedtestfiles
-#               path: geode-ci/ci/scripts/test-archive.sh
+            MAINTENANCE_VERSION: ((!maintenance-version))
+            SERVICE_ACCOUNT: ((!concourse-gcp-account))
+            PUBLIC_BUCKET: ((!public-bucket))
+            PARALLEL_DUNIT: true
+            DUNIT_PARALLEL_FORKS: 7
+            CALL_STACK_TIMEOUT: 25200
+          run:
+#            args:
+#            - distributedTest
+#            - distributedtestfiles
+#            path: geode/ci/scripts/test-run.sh
+            args: ["Not running DistributedTest"]
+            path: echo
+        on_success:
+          aggregate:
+          - put: geode
+            params:
+              path: geode-unmerged-request
+              context: $BUILD_JOB_NAME
+              status: success
+        on_failure:
+          aggregate:
+          - put: geode
+            params:
+              path: geode-unmerged-request
+              status: failure
+              context: $BUILD_JOB_NAME
+#          - put: send-notification-email
+#            params:
+#              subject: built-geode/subject
+#               body: built-geode/body
+        ensure:
+#           aggregate:
+#           - task: archive-results
+#             config:
+#               inputs:
+#                 - name: geode
+#                 - name: built-geode
+#               platform: linux
+#               image_resource: *docker-geode-build-image
+#               params:
+#                 MAINTENANCE_VERSION: ((!maintenance-version))
+#                 SERVICE_ACCOUNT: ((!concourse-gcp-account))
+#                 PUBLIC_BUCKET: ((!public-bucket))
+#               run:
+#                 args:
+#                 - distributedTest
+#                 - distributedtestfiles
+#               path: geode/ci/scripts/test-archive.sh
 #
 
+- name: AcceptanceTest
+  serial: false
+  public: true
+  plan:
+    - aggregate:
+      - get: docker-test-image
+        params:
+          rootfs: true
+      - get: geode
+        trigger: true
+        version: every
+        params:
+          fetch_merge: true
+          git:
+            depth: 100
+    - get: geode-unmerged-request
+      resource: geode
+      version: every
+      params:
+        fetch_merge: false
+    - aggregate:
+      - put: geode
+        params:
+          path: geode-unmerged-request
+          context: $BUILD_JOB_NAME
+          status: pending
+      - task: runtests
+        privileged: true
+        timeout: 8h
+        config:
+          inputs:
+            - name: geode
+            - name: docker-test-image
+          platform: linux
+          outputs:
+            - name: built-geode
+          image_resource: *docker-geode-build-image
+          params:
+            MAINTENANCE_VERSION: ((!maintenance-version))
+            SERVICE_ACCOUNT: ((!concourse-gcp-account))
+            PUBLIC_BUCKET: ((!public-bucket))
+            CALL_STACK_TIMEOUT: 25200
+          run:
+#            args:
+#            - :geode-assembly:acceptanceTest geo  de-connectors:acceptanceTest
+#            - acceptancetestfiles
+#            path: geode/ci/scripts/test-run.sh
+            args: ["Not running AcceptanceTest"]
+            path: echo
+        on_success:
+          aggregate:
+          - put: geode
+            params:
+              path: geode-unmerged-request
+              context: $BUILD_JOB_NAME
+              status: success
+        on_failure:
+          aggregate:
+          - put: geode
+            params:
+              path: geode-unmerged-request
+              status: failure
+              context: $BUILD_JOB_NAME
+#          - put: send-notification-email
+#            params:
+#              subject: built-geode/subject
+#              body: built-geode/body
+        ensure:
+#           aggregate:
+#           - task: archive-results
+#             config:
+#               inputs:
+#                 - name: geode
+#                 - name: built-geode
+#               platform: linux
+#               image_resource: *docker-geode-build-image
+#               params:
+#                 MAINTENANCE_VERSION: ((!maintenance-version))
+#                 SERVICE_ACCOUNT: ((!concourse-gcp-account))
+#                 PUBLIC_BUCKET: ((!public-bucket))
+#               run:
+#                 args:
+#                 - :geode-assembly:acceptanceTest
+#                 - acceptancetestfiles
+#               path: geode/ci/scripts/test-archive.sh
+
+- name: IntegrationTest
+  serial: false
+  public: true
+  plan:
+    - aggregate:
+      - get: docker-test-image
+        params:
+          rootfs: true
+      - get: geode
+        trigger: true
+        version: every
+        params:
+          fetch_merge: true
+          git:
+            depth: 100
+    - get: geode-unmerged-request
+      resource: geode
+      version: every
+      params:
+        fetch_merge: false
+    - aggregate:
+      - put: geode
+        params:
+          path: geode-unmerged-request
+          context: $BUILD_JOB_NAME
+          status: pending
+      - task: runtests
+        privileged: true
+        timeout: 8h
+        config:
+          inputs:
+            - name: geode
+            - name: docker-test-image
+          platform: linux
+          outputs:
+            - name: built-geode
+          image_resource: *docker-geode-build-image
+          params:
+            MAINTENANCE_VERSION: ((!maintenance-version))
+            SERVICE_ACCOUNT: ((!concourse-gcp-account))
+            PUBLIC_BUCKET: ((!public-bucket))
+            PARALLEL_DUNIT: true
+            DUNIT_PARALLEL_FORKS: 1
+            CALL_STACK_TIMEOUT: 25200
+          run:
+#            args:
+#            - integrationTest
+#            - integrationtestfiles
+#            path: geode/ci/scripts/test-run.sh
+            args: ["Not running IntegrationTest"]
+            path: echo
+        on_success:
+          aggregate:
+          - put: geode
+            params:
+              path: geode-unmerged-request
+              context: $BUILD_JOB_NAME
+              status: success
+        on_failure:
+          aggregate:
+          - put: geode
+            params:
+              path: geode-unmerged-request
+              status: failure
+              context: $BUILD_JOB_NAME
+#          - put: send-notification-email
+#            params:
+#              subject: built-geode/subject
+#              body: built-geode/body
+        ensure:
+#           aggregate:
+#           - task: archive-results
+#             config:
+#               inputs:
+#                 - name: geode
+#                 - name: built-geode
+#               platform: linux
+#               image_resource: *docker-geode-build-image
+#               params:
+#                 MAINTENANCE_VERSION: ((!maintenance-version))
+#                 SERVICE_ACCOUNT: ((!concourse-gcp-account))
+#                 PUBLIC_BUCKET: ((!public-bucket))
+#               run:
+#                 args:
+#                 - integrationTest
+#                 - integrationtestfiles
+#                 path: geode/ci/scripts/test-archive.sh
+
+- name: FlakyTest
+  serial: false
+  public: true
+  plan:
+    - aggregate:
+      - get: docker-test-image
+        params:
+          rootfs: true
+      - get: geode
+        trigger: true
+        version: every
+        params:
+          fetch_merge: true
+          git:
+            depth: 100
+    - get: geode-unmerged-request
+      resource: geode
+      version: every
+      params:
+        fetch_merge: false
+    - aggregate:
+      - put: geode
+        params:
+          path: geode-unmerged-request
+          context: $BUILD_JOB_NAME
+          status: pending
+      - task: runtests
+        privileged: true
+        timeout: 8h
+        config:
+          inputs:
+            - name: geode
+            - name: docker-test-image
+          platform: linux
+          outputs:
+            - name: built-geode
+          image_resource: *docker-geode-build-image
+          params:
+            MAINTENANCE_VERSION: ((!maintenance-version))
+            SERVICE_ACCOUNT: ((!concourse-gcp-account))
+            PUBLIC_BUCKET: ((!public-bucket))
+            CALL_STACK_TIMEOUT: 25200
+          run:
+#            args:
+#            - flakyTest
+#            - flakytestfiles
+#            path: geode/ci/scripts/test-run.sh
+            args: ["Not running FlakyTest"]
+            path: echo
+        on_success:
+          aggregate:
+          - put: geode
+            params:
+              path: geode-unmerged-request
+              context: $BUILD_JOB_NAME
+              status: success
+        on_failure:
+          aggregate:
+          - put: geode
+            params:
+              path: geode-unmerged-request
+              status: failure
+              context: $BUILD_JOB_NAME
+#          - put: send-notification-email
+#            params:
+#              subject: built-geode/subject
+#              body: built-geode/body
+        ensure:
+#           aggregate:
+#           - task: archive-results
+#             config:
+#               inputs:
+#                 - name: geode
+#                 - name: built-geode
+#               platform: linux
+#               image_resource: *docker-geode-build-image
+#               params:
+#                 MAINTENANCE_VERSION: ((!maintenance-version))
+#                 SERVICE_ACCOUNT: ((!concourse-gcp-account))
+#                 PUBLIC_BUCKET: ((!public-bucket))
+#               run:
+#                 args:
+#                 - flakyTest
+#                 - flakytestfiles
+#                 path: geode/ci/scripts/test-archive.sh
+
+- name: UITests
+  serial: false
+  public: true
+  plan:
+    - aggregate:
+      - get: docker-test-image
+        params:
+          rootfs: true
+      - get: geode
+        trigger: true
+        version: every
+        params:
+          fetch_merge: true
+          git:
+            depth: 100
+    - get: geode-unmerged-request
+      resource: geode
+      version: every
+      params:
+        fetch_merge: false
+    - aggregate:
+      - put: geode
+        params:
+          path: geode-unmerged-request
+          context: $BUILD_JOB_NAME
+          status: pending
+      - task: runtests
+        privileged: true
+        timeout: 2h
+        config:
+          inputs:
+            - name: geode
+            - name: docker-test-image
+          platform: linux
+          outputs:
+            - name: built-geode
+          image_resource: *docker-geode-build-image
+          params:
+            MAINTENANCE_VERSION: ((!maintenance-version))
+            SERVICE_ACCOUNT: ((!concourse-gcp-account))
+            PUBLIC_BUCKET: ((!public-bucket))
+            PARALLEL_DUNIT: true
+            DUNIT_PARALLEL_FORKS: 1
+            CALL_STACK_TIMEOUT: 25200
+          run:
+#            args:
+#            - uiTest
+#            - uitestfiles
+#            path: geode/ci/scripts/test-run.sh
+            args: ["Not running uiTest"]
+            path: echo
+        on_success:
+          aggregate:
+          - put: geode
+            params:
+              path: geode-unmerged-request
+              context: $BUILD_JOB_NAME
+              status: success
+        on_failure:
+          aggregate:
+          - put: geode
+            params:
+              path: geode-unmerged-request
+              status: failure
+              context: $BUILD_JOB_NAME
 
 groups:
 - name: staging
   jobs:
   - Build
   - DistributedTest
-#  - AcceptanceTest
-#  - IntegrationTest
-#  - FlakyTest
-#  - TestExamples
-#  - UpdatePassingRef
-#- name: UITests
-#  jobs:
-#  - Build
-#  - UITests
+  - AcceptanceTest
+  - IntegrationTest
+  - FlakyTest
+- name: UITests
+  jobs:
+  - Build
+  - UITests
