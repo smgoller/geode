@@ -22,29 +22,6 @@ image_resource: &docker-geode-build-image
     repository: gcr.io/apachegeode-ci/((!docker-image-name))
     tag: latest
 
-
-plan: &get-geode-set-pending
-  - aggregate:
-    - get: geode
-      trigger: true
-      version: every
-      params:
-        fetch_merge: true
-        git:
-          depth: 100
-  - get: geode-unmerged-request
-    resource: geode
-    version: every
-    params:
-      fetch_merge: false
-  - aggregate:
-    - put: geode
-      params:
-        path: geode-unmerged-request
-        context: $BUILD_JOB_NAME
-        status: pending
-
-
 resources:
 - name: docker-test-image
   type: docker-image
@@ -55,8 +32,8 @@ resources:
 - name: geode
   type: pull-request
   source:
-    access_token: 9d98dbdc065e55ad7462f646402208510a8e362e
-    repo: "robbadler/geode"
+    access_token: ((!github-pr-access-token))
+    repo: "smgoller/geode"
     base: develop
     ignore_paths:
     - geode-docs/*
