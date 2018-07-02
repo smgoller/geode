@@ -28,7 +28,7 @@ export TMPDIR=${DEST_DIR}/tmp
 export GEODE_BUILD=${DEST_DIR}/test
 export GEODE_BUILD_VERSION_NUMBER=$(grep "versionNumber *=" geode/gradle.properties | awk -F "=" '{print $2}' | tr -d ' ')
 export BUILD_TIMESTAMP=$(date +%s)
-GEODE_PULL_REQUEST_ID_FILE=${ROOT_DIR}/geode/.git/id
+GEODE_PULL_REQUEST_ID_FILE=${BUILDROOT}/geode/.git/id
 if [ -e "${GEODE_PULL_REQUEST_ID_FILE}" ]; then
   GEODE_PULL_REQUEST_ID=$(cat ${GEODE_PULL_REQUEST_ID_FILE})
 fi
