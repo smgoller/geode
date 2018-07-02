@@ -91,7 +91,7 @@ jobs:
         ensure:
           aggregate:
           - task: archive-results
-            image_resource: docker-geode-build-image
+            image: docker-geode-build-image
             config:
               inputs:
                 - name: geode
@@ -105,4 +105,4 @@ jobs:
                 args:
                 - (( grab metadata.job.gradle_task ))
                 - (( grab metadata.job.artifact_slug ))
-              path: geode/ci/scripts/test-archive.sh
+                path: geode/ci/scripts/test-archive.sh
