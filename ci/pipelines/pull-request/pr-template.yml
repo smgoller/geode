@@ -61,7 +61,7 @@ jobs:
             MAINTENANCE_VERSION: (( grab metadata.geode-build-branch ))
             SERVICE_ACCOUNT: ((!concourse-gcp-account))
             PUBLIC_BUCKET: ((!public-bucket))
-            PARALLEL_DUNIT: (( grab metadaata.job.dunit.parallel ))
+            PARALLEL_DUNIT: (( grab metadata.job.dunit.parallel ))
             DUNIT_PARALLEL_FORKS: (( grab metadata.job.dunit.forks ))
             CALL_STACK_TIMEOUT: (( grab metadata.job.call_stack_timeout ))
           run:
