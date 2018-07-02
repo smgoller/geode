@@ -63,7 +63,7 @@ resources:
 jobs:
 - name: set-pipeline
   serial: true
-  public: true
+  public: ((!public-pipelines))
   plan:
   - get: geode-pipeline
     trigger: true
@@ -88,7 +88,7 @@ jobs:
 
 - name: set-pr-pipeline
   serial: true
-  public: true
+  public: ((!public-pipelines))
   plan:
   - get: geode-pipeline
     trigger: true
@@ -113,7 +113,7 @@ jobs:
 
 - name: set-docker-images-pipeline
   serial: true
-  public: true
+  public: ((!public-pipelines))
   plan:
   - get: geode-docker-images-pipeline
     trigger: true
@@ -125,7 +125,7 @@ jobs:
         config_file: geode-docker-images-pipeline/ci/pipelines/docker-images.yml
 - name: set-metrics-pipeline
   serial: true
-  public: true
+  public: ((!public-pipelines))
   plan:
   - get: geode-metrics-pipeline
     trigger: true

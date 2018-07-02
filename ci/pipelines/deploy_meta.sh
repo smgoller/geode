@@ -21,8 +21,13 @@ TARGET=geode
 GEODE_FORK=${1:-apache}
 #TEAM=$(fly targetgets | grep ^${TARGET} | awk '{print $3}')
 TEAM="staging"
+PUBLIC=true
 
 echo "Deploying pipline for ${GEODE_FORK}/${GEODE_BRANCH}"
+
+if [ "${TEAM}" = "staging" ]; then
+  PUBLIC=false
+fi
 
 set -x
 fly -t ${TARGET} set-pipeline \
@@ -30,4 +35,5 @@ fly -t ${TARGET} set-pipeline \
   -c meta.yml \
   --var geode-build-branch=${GEODE_BRANCH} \
   --var geode-fork=${GEODE_FORK} \
-  --var concourse-team=${TEAM}
+  --var concourse-team=${TEAM} \
+  --yaml-var public-pipelines=${PUBLIC}
