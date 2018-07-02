@@ -131,7 +131,7 @@ jobs:
         - put: geode
           params:
             path: geode-unmerged-request
-            status: failure
+            status: success
             context: $BUILD_JOB_NAME
 
 - name: DistributedTest
