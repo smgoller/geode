@@ -21,10 +21,13 @@ import static org.apache.geode.distributed.ConfigurationProperties.JMX_MANAGER_P
 import static org.apache.geode.distributed.ConfigurationProperties.JMX_MANAGER_START;
 import static org.apache.geode.distributed.ConfigurationProperties.LOCATORS;
 import static org.apache.geode.distributed.ConfigurationProperties.LOG_FILE;
+import static org.apache.geode.distributed.ConfigurationProperties.MAX_WAIT_TIME_RECONNECT;
 import static org.apache.geode.distributed.ConfigurationProperties.MCAST_PORT;
 import static org.apache.geode.distributed.ConfigurationProperties.NAME;
 import static org.apache.geode.distributed.ConfigurationProperties.SECURITY_MANAGER;
 import static org.awaitility.Awaitility.await;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +42,7 @@ import org.junit.rules.TemporaryFolder;
 
 import org.apache.geode.distributed.DistributedSystem;
 import org.apache.geode.distributed.internal.InternalDistributedSystem;
+import org.apache.geode.distributed.internal.membership.gms.MembershipManagerHelper;
 import org.apache.geode.internal.AvailablePortHelper;
 import org.apache.geode.internal.cache.InternalCache;
 import org.apache.geode.internal.net.SocketCreatorFactory;
@@ -59,7 +63,7 @@ public abstract class MemberStarterRule<T> extends SerializableExternalResource 
 
   protected transient TemporaryFolder temporaryFolder;
   protected File workingDir;
-  protected int memberPort = -1;
+  protected int memberPort = 0;
   protected int jmxPort = -1;
   protected int httpPort = -1;
 
@@ -75,6 +79,9 @@ public abstract class MemberStarterRule<T> extends SerializableExternalResource 
     // initial values
     properties.setProperty(MCAST_PORT, "0");
     properties.setProperty(LOCATORS, "");
+    // set the reconnect wait time to 5 seconds in case some tests needs to reconnect in a timely
+    // manner.
+    properties.setProperty(MAX_WAIT_TIME_RECONNECT, "5000");
   }
 
   @Override
@@ -96,6 +103,11 @@ public abstract class MemberStarterRule<T> extends SerializableExternalResource 
     } else {
       System.setProperty("user.dir", oldUserDir);
     }
+  }
+
+  public T withPort(int memberPort) {
+    this.memberPort = memberPort;
+    return (T) this;
   }
 
   public T withWorkingDir(File workingDir) {
@@ -267,7 +279,8 @@ public abstract class MemberStarterRule<T> extends SerializableExternalResource 
   public void waitTilGatewaySendersAreReady(int expectedGatewayObjectCount) throws Exception {
     DistributedSystemMXBean dsMXBean = getManagementService().getDistributedSystemMXBean();
     await().atMost(30, TimeUnit.SECONDS)
-        .until(() -> dsMXBean.listGatewaySenderObjectNames().length == expectedGatewayObjectCount);
+        .until(() -> assertThat(dsMXBean.listGatewaySenderObjectNames().length,
+            is(expectedGatewayObjectCount)));
   }
 
   public void waitTillDiskStoreIsReady(String diskstoreName, int serverCount) {
@@ -281,6 +294,11 @@ public abstract class MemberStarterRule<T> extends SerializableExternalResource 
   }
 
   abstract void stopMember();
+
+  public void forceDisconnectMember() {
+    MembershipManagerHelper
+        .crashDistributedSystem(InternalDistributedSystem.getConnectedInstance());
+  }
 
   @Override
   public File getWorkingDir() {
