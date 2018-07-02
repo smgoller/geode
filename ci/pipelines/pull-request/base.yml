@@ -69,6 +69,7 @@ groups:
   - AcceptanceTest
   - IntegrationTest
   - FlakyTest
+  - UITests
 
 jobs:
 - name: Build
@@ -170,7 +171,6 @@ jobs:
       config:
         inputs:
           - name: geode
-          - name: geode
           - name: docker-geode-build-image
         platform: linux
         outputs:
@@ -200,7 +200,6 @@ jobs:
           image: docker-geode-build-image
           config:
             inputs:
-              - name: geode
               - name: geode
               - name: built-geode
             platform: linux
