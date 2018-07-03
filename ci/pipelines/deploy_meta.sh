@@ -19,8 +19,8 @@ GEODE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 SANITIZED_GEODE_BRANCH=$(echo ${GEODE_BRANCH} | tr "/" "-")
 TARGET=geode
 GEODE_FORK=${1:-apache}
-#TEAM=$(fly targetgets | grep ^${TARGET} | awk '{print $3}')
-TEAM="staging"
+TEAM=$(fly targets | grep ^${TARGET} | awk '{print $3}')
+
 PUBLIC=true
 
 echo "Deploying pipline for ${GEODE_FORK}/${GEODE_BRANCH}"
