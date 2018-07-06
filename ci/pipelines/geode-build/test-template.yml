@@ -54,9 +54,3 @@ jobs:
           - (( grab metadata.job.gradle_task ))
           - (( grab metadata.job.artifact_slug ))
           path: geode-ci/ci/scripts/test-run.sh
-      on_failure:
-        aggregate:
-          - put: send-notification-email
-            params:
-              subject: built-geode/subject
-              body: built-geode/body
