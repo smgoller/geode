@@ -23,15 +23,6 @@ resource_types:
     repository: concourse/concourse-pipeline-resource
 
 resources:
-- name: apachegeode-concourse
-  type: concourse-pipeline
-  source:
-    target: https://concourse.apachegeode-ci.info
-    insecure: "true"
-    teams:
-    - name: ((!concourse-team))
-      username: ((!concourse-username))
-      password: ((!concourse-password))
 - name: geode-pipeline
   type: git
   source:
@@ -39,20 +30,6 @@ resources:
     branch: ((!geode-build-branch))
     paths:
     - ci/*
-- name: geode-docker-images-pipeline
-  type: git
-  source:
-    uri: https://github.com/((!geode-fork))/geode.git
-    branch: ((!geode-build-branch))
-    paths:
-    - ci/pipelines/docker-images.yml
-- name: geode-metrics-pipeline
-  type: git
-  source:
-    uri: https://github.com/((!geode-fork))/geode.git
-    branch: ((!geode-build-branch))
-    paths:
-    - ci/pipelines/metrics.yml
 - name: apachegeode-build-concourse-docker-image
   type: docker-image
   source:

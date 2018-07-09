@@ -45,12 +45,6 @@ resources:
     branch: (( grab metadata.geode-build-branch ))
     paths:
     - ci/*
-- name: geode-examples
-  type: git
-  source:
-    uri: https://github.com/apache/geode-examples.git
-    branch: develop
-    depth: 10
 - name: geode-build-version
   type: semver
   source:
