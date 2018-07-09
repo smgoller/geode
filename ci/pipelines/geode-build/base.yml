@@ -61,7 +61,8 @@ groups:
 
 jobs:
 - name: DistributedTest
-  serial: true
+  max_in_flight: 50
+  serial: false
   public: true
   plan:
     - aggregate:
