@@ -21,8 +21,8 @@ resources:
 - name: apachegeode-build-concourse-dockerfile
   type: git
   source:
-    uri: https://github.com/apache/geode.git
-    branch: develop
+    uri: https://github.com/((!geode-fork))/geode.git
+    branch: ((!geode-build-branch))
     paths:
     - ci/docker/*
 
@@ -40,15 +40,10 @@ resources:
     tag: 8
     skip_download: true
 
-- name: google-geode-builder-packer
-  type: git
-  source:
-    uri: https://github.comf/
-
 jobs:
 # apachegeode-build-concourse
 - name: build-apachegeode-build-concourse-docker-image
-  public: true
+  public: ((!public-pipelines))
   serial: true
   plan:
   - aggregate:

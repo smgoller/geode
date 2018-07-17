@@ -137,18 +137,6 @@ jobs:
       run:
         path: geode-images-pipeline/ci/pipelines/images/deploy_images_pipeline.sh
 
-- name: set-images-pipeline
-  serial: true
-  public: ((!public-pipelines))
-  plan:
-  - get: geode-images-pipeline
-    trigger: true
-  - put: apachegeode-concourse
-    params:
-      pipelines:
-      - name: ((!pipeline-prefix))images
-        team: ((!concourse-team))
-        config_file: geode-images-pipeline/ci/pipelines/images.yml
 - name: set-metrics-pipeline
   serial: true
   public: ((!public-pipelines))
