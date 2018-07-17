@@ -23,7 +23,7 @@ TEAM=$(fly targets | grep ^${TARGET} | awk '{print $3}')
 
 PUBLIC=true
 
-echo "Deploying pipline for ${GEODE_FORK}/${GEODE_BRANCH}"
+echo "Deploying pipline for ${GEODE_FORK}/${GEODE_BRANCH} on team ${TEAM}"
 
 if [ "${TEAM}" = "staging" ]; then
   PUBLIC=false
