@@ -38,7 +38,7 @@ resources:
     uri: https://github.com/((!geode-fork))/geode.git
     branch: ((!geode-build-branch))
     paths:
-    - ci/*
+    - ci/pipelines/geode-build/*
 - name: geode-images-pipeline
   type: git
   source:

@@ -75,12 +75,12 @@ PIPELINE_NAME="${PIPELINE_PREFIX}images"
 
 fly login -t ${TARGET} -n ${TEAM} -c https://concourse.apachegeode-ci.info -u ${CONCOURSE_USERNAME} -p ${CONCOURSE_PASSWORD}
 set -x
-echo "fly -t ${TARGET} set-pipeline \
+fly -t ${TARGET} set-pipeline \
   --non-interactive \
   --pipeline ${PIPELINE_NAME} \
   --config geode-images-pipeline/ci/pipelines/images/images.yml \
   --var concourse-team=${TEAM} \
   --var geode-fork=${GEODE_FORK} \
   --var geode-build-branch=${GEODE_BRANCH} \
-  --yaml-var public-pipelines=${PUBLIC_PIPELINES}"
+  --yaml-var public-pipelines=${PUBLIC_PIPELINES}
 
