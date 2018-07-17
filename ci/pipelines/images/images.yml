@@ -39,6 +39,12 @@ resources:
     repository: openjdk
     tag: 8
     skip_download: true
+
+- name: google-geode-builder-packer
+  type: git
+  source:
+    uri: https://github.comf/
+
 jobs:
 # apachegeode-build-concourse
 - name: build-apachegeode-build-concourse-docker-image

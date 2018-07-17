@@ -45,7 +45,7 @@ resources:
     uri: https://github.com/((!geode-fork))/geode.git
     branch: ((!geode-build-branch))
     paths:
-    - ci/pipelines/images.yml
+    - ci/pipelines/images/*
 - name: geode-metrics-pipeline
   type: git
   source:
@@ -110,6 +110,32 @@ jobs:
         CONCOURSE_TEAM: ((!concourse-team))
       run:
         path: geode-pipeline/ci/pipelines/pull-request/deploy_pr_pipeline.sh
+
+- name: set-images-pipeline
+  serial: true
+  public: ((!public-pipelines))
+  plan:
+  - get: geode-images-pipeline
+    trigger: true
+  - get: apachegeode-build-concourse-docker-image
+  - task: deploy-images
+    image: apachegeode-build-concourse-docker-image
+    config:
+      inputs:
+      - name: geode-images-pipeline
+      outputs:
+      - name: results
+      platform: linux
+      params:
+        OUTPUT_DIRECTORY: results
+        GEODE_BRANCH: ((!geode-build-branch))
+        GEODE_FORK: ((!geode-fork))
+        CONCOURSE_USERNAME: ((!concourse-username))
+        CONCOURSE_PASSWORD: ((!concourse-password))
+        CONCOURSE_TEAM: ((!concourse-team))
+        PUBLIC_PIPELINES: ((!public-pipelines))
+      run:
+        path: geode-images-pipeline/ci/pipelines/images/deploy_images_pipeline.sh
 
 - name: set-images-pipeline
   serial: true
