@@ -120,7 +120,7 @@ jobs:
   - put: apachegeode-concourse
     params:
       pipelines:
-      - name: ((!geode-build-branch))-images
+      - name: ((!pipeline-prefix))images
         team: ((!concourse-team))
         config_file: geode-images-pipeline/ci/pipelines/images.yml
 - name: set-metrics-pipeline
@@ -132,6 +132,6 @@ jobs:
   - put: apachegeode-concourse
     params:
       pipelines:
-      - name: develop-metrics
+      - name: ((!geode-build-branch))-metrics
         team: ((!concourse-team))
         config_file: geode-metrics-pipeline/ci/pipelines/metrics.yml
