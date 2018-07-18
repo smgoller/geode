@@ -25,4 +25,7 @@ done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 pushd ${SCRIPTDIR}
+CREDENTIALS_FILE=concourse-key.json
+echo "${GCP_CONCOURSE_KEY}" | base64 -d > ${CREDENTIALS_FILE}
+export GOOGLE_APPLICATION_CREDENTIALS=${CREDENTIALS_FILE}
 packer build packer.json
