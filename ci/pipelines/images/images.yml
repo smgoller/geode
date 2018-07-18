@@ -76,7 +76,7 @@ jobs:
     image: apachegeode-build-concourse-docker-image
     config:
       inputs:
-      - name: build-google-geode-builder
+      - name: google-geode-builder
       outputs:
       - name: results
       platform: linux
