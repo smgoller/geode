@@ -33,7 +33,7 @@ resources:
   source:
     username: ((!docker-username))
     password: ((!docker-password))
-    repository: gcr.io/apachegeode-ci/((!docker-image-name))
+    repository: gcr.io/apachegeode-ci/((!docker-image-prefix))((!docker-image-name))
     tag: latest
 - name: geode
   type: git

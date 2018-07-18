@@ -63,8 +63,10 @@ TEAM=${CONCOURSE_TEAM}
 
 if [[ "${GEODE_FORK}" == "apache" ]]; then
   PIPELINE_PREFIX=""
+  DOCKER_IMAGE_PREFIX=""
 else
   PIPELINE_PREFIX="${GEODE_FORK}-${SANITIZED_GEODE_BRANCH}-"
+  DOCKER_IMAGE_PREFIX=${PIPELINE_PREFIX}
 fi
 
 PIPELINE_NAME="${PIPELINE_PREFIX}images"
@@ -82,5 +84,6 @@ fly -t ${TARGET} set-pipeline \
   --var concourse-team=${TEAM} \
   --var geode-fork=${GEODE_FORK} \
   --var geode-build-branch=${GEODE_BRANCH} \
+  --var docker-image-prefix=${DOCKER_IMAGE_PREFIX} \
   --yaml-var public-pipelines=${PUBLIC_PIPELINES}
 
