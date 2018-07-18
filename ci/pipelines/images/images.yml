@@ -68,8 +68,10 @@ jobs:
   public: ((!public-pipelines))
   serial: true
   plan:
-  - get: google-geode-builder
-    trigger: true
+  - aggregate:
+    - get: google-geode-builder
+      trigger: true
+    - get: apachegeode-build-concourse-docker-image
   - task: build-image
     image: apachegeode-build-concourse-docker-image
     config:
