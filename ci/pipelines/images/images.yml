@@ -40,6 +40,14 @@ resources:
     tag: 8
     skip_download: true
 
+- name: google-geode-builder
+  type: git
+  source:
+    uri: https://github.com/((!geode-fork))/geode.git
+    branch: ((!geode-build-branch))
+    paths:
+    - ci/images/google-geode-builder
+
 jobs:
 # apachegeode-build-concourse
 - name: build-apachegeode-build-concourse-docker-image
@@ -55,3 +63,20 @@ jobs:
     params:
       build: apachegeode-build-concourse-dockerfile/ci/docker
       tag_as_latest: true
+
+- name: build-google-geode-builder
+  public: ((!public-pipelines))
+  serial: true
+  plan:
+  - get: google-geode-builder
+    trigger: true
+  - task: build-image
+    image: apachegeode-build-concourse-docker-image
+    config:
+      inputs:
+      - name: build-google-geode-builder
+      outputs:
+      - name: results
+      platform: linux
+      run:
+        path: google-geode-builder/ci/images/google-geode-builder/build_image.sh
