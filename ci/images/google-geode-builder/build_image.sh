@@ -27,8 +27,8 @@ SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 pushd ${SCRIPTDIR}
 echo "Setting up credentials for packer"
 
-CREDENTIALS_FILE=concourse-key.json
-echo "${GCP_CONCOURSE_KEY}" | base64 -d > ${CREDENTIALS_FILE}
-export GOOGLE_APPLICATION_CREDENTIALS=${CREDENTIALS_FILE}
+#CREDENTIALS_FILE=concourse-key.json
+#echo "${GCP_CONCOURSE_KEY}" | base64 -d > ${CREDENTIALS_FILE}
+#export GOOGLE_APPLICATION_CREDENTIALS=${CREDENTIALS_FILE}
 echo "Running packer"
 packer build packer.json

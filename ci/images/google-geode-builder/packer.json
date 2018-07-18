@@ -23,8 +23,7 @@
       "ssh_username": "packer",
       "zone": "us-central1-f",
       "image_family": "geode-builder",
-      "image_name": "geode-builder-{{timestamp}}",
-      "disable_default_service_account": true
+      "image_name": "geode-builder-{{timestamp}}"
     }
   ]
 }
