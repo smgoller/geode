@@ -17,7 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set +e
+set -e
 set -x
 
 env
@@ -50,3 +50,5 @@ echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${ZONE} --quiet -- true
 
 rsync -e "ssh -i $HOME/.ssh/google_compute_engine" -azh ${REPODIR} geode@${INSTANCE_IP_ADDRESS}:.
+
+gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${ZONE} --quiet -- ls -lR
