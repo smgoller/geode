@@ -39,7 +39,7 @@ BUILD_ID=$(cat concourse-metadata/build-id)
 BUILD_JOB_NAME=$(cat concourse-metadata/build-job-name)
 BUILD_PIPELINE_NAME=$(cat concourse-metadata/build-pipeline-name)
 
-INSTANCE_NAME="geode-builder-${BUILD_PIPELINE_NAME}-${BUILD_JOB_NAME}-${BUILD_ID}"
+INSTANCE_NAME="$(echo "geode-builder-${BUILD_PIPELINE_NAME}-${BUILD_JOB_NAME}-${BUILD_ID}" | tr '[:upper:]' '[:lower:]')"
 PROJECT=apachegeode-ci
 ZONE=us-central1-f
 
