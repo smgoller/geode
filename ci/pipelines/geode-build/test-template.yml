@@ -42,15 +42,16 @@ jobs:
         run:
           path: geode-ci/ci/scripts/start_instance.sh
     ensure:
-    - task: stop_instance
-      image: alpine-tools-image
-      config:
-        inputs:
-          - name: concourse-metadata
-          - name: geode-ci
-        platform: linux
-        run:
-          path: geode-ci/ci/scripts/stop_instance.sh
+      do:
+      - task: stop_instance
+        image: alpine-tools-image
+        config:
+          inputs:
+            - name: concourse-metadata
+            - name: geode-ci
+          platform: linux
+          run:
+            path: geode-ci/ci/scripts/stop_instance.sh
 
 #    - task: runtests
 #      image: alpine-tools-image
