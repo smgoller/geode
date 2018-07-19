@@ -34,7 +34,12 @@ SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 REPODIR=$(pushd geode 2>&1 > /dev/null; git rev-parse --show-toplevel)
 
-INSTANCE_NAME=geode-builder-test
+
+BUILD_ID=$(cat concourse-metadata/build-id)
+BUILD_JOB_NAME=$(cat concourse-metadata/build-job-name)
+BUILD_PIPELINE_NAME=$(cat concourse-metadata/build-pipeline-name)
+
+INSTANCE_NAME="geode-builder-${BUILD_PIPELINE_NAME}-${BUILD_JOB_NAME}-${BUILD_ID}"
 PROJECT=apachegeode-ci
 ZONE=us-central1-f
 

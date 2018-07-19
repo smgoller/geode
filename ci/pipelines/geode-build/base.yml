@@ -26,6 +26,10 @@ resource_types:
     type: docker-image
     source:
       repository: pcfseceng/email-resource
+  - name: concourse-metadata
+    type: docker-image
+    source:
+      repository: swce/metadata-resource
 
 resources:
 - name: docker-geode-build-image
@@ -88,6 +92,8 @@ resources:
       password: ((!source-email-password))
     from: ((!source-email-address))
     to: [ ((!notification-email-address)) ]
+- name: concourse-metadata
+  type: concourse-metadata
 
 groups:
 - name: main
