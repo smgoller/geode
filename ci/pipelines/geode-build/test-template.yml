@@ -20,37 +20,37 @@ jobs:
   serial: true
   public: true
   plan:
-    - do:
-      - aggregate:
-        - get: concourse-metadata
-        - get: geode
-          passed: [Build]
-          trigger: true
-        - get: geode-ci
-        - get: geode-build-version
-          passed: [Build]
-        - get: alpine-tools-image
-          params:
-            rootfs: true
-      - task: start_instance
-        image: alpine-tools-image
-        config:
-          inputs:
-            - name: concourse-metadata
-            - name: geode-ci
-          platform: linux
-          run:
-            path: geode-ci/ci/scripts/start_instance.sh
-      ensure:
-      - task: stop_instance
-        image: alpine-tools-image
-        config:
-          inputs:
-            - name: concourse-metadata
-            - name: geode-ci
-          platform: linux
-          run:
-            path: geode-ci/ci/scripts/stop_instance.sh
+  - do:
+    - aggregate:
+      - get: concourse-metadata
+      - get: geode
+        passed: [Build]
+        trigger: true
+      - get: geode-ci
+      - get: geode-build-version
+        passed: [Build]
+      - get: alpine-tools-image
+        params:
+          rootfs: true
+    - task: start_instance
+      image: alpine-tools-image
+      config:
+        inputs:
+          - name: concourse-metadata
+          - name: geode-ci
+        platform: linux
+        run:
+          path: geode-ci/ci/scripts/start_instance.sh
+    ensure:
+    - task: stop_instance
+      image: alpine-tools-image
+      config:
+        inputs:
+          - name: concourse-metadata
+          - name: geode-ci
+        platform: linux
+        run:
+          path: geode-ci/ci/scripts/stop_instance.sh
 
 #    - task: runtests
 #      image: alpine-tools-image
