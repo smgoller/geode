@@ -44,6 +44,8 @@ INSTANCE_IP_ADDRESS=$(gcloud compute instances list  | awk "/^${INSTANCE_NAME}/ 
 PROJECT=apachegeode-ci
 ZONE=us-central1-f
 
+echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
+
 # generate an ssh key for us to use
 gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${ZONE} --quiet -- true
 

@@ -40,6 +40,8 @@ INSTANCE_NAME="$(echo "geode-builder-${BUILD_PIPELINE_NAME}-${BUILD_JOB_NAME}-${
 PROJECT=apachegeode-ci
 ZONE=us-central1-f
 
+echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
+
 gcloud compute --project=${PROJECT} instances create ${INSTANCE_NAME} \
   --zone=${ZONE} \
   --machine-type=n1-standard-1 \
