@@ -41,4 +41,4 @@ ZONE="$(cat instance-data/zone)"
 
 echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 
-rsync -e "ssh -i ${SSHKEY_FILE}" -azh ${REPODIR} geode@${INSTANCE_IP_ADDRESS}:.
+time rsync -e "ssh -i ${SSHKEY_FILE}" -ah ${REPODIR} geode@${INSTANCE_IP_ADDRESS}:.

@@ -41,4 +41,4 @@ echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 
 OUTPUT_DIR=${BASE_DIR}/geode-results
 
-rsync -e "ssh -i ${SSHKEY_FILE}" -azh geode@${INSTANCE_IP_ADDRESS}:. ${OUTPUT_DIR}/.
+time rsync -e "ssh -i ${SSHKEY_FILE}" -ah geode@${INSTANCE_IP_ADDRESS}:. ${OUTPUT_DIR}/.
