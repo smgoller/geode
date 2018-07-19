@@ -1,6 +1,7 @@
 FROM alpine:3.7
 
 COPY --from=google/cloud-sdk:alpine /google-cloud-sdk /google-cloud-sdk
+COPY --from=hashicorp/packer:latest /bin/packer /usr/local/bin/packer
 ENV PATH /google-cloud-sdk/bin:$PATH
 RUN apk --no-cache add \
       bash \
