@@ -54,3 +54,9 @@ CREATE_EXIT_STATUS=$?
 while ! gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${ZONE} --ssh-key-file=${SSHKEY_FILE} --quiet -- true; do
   echo -n .
 done
+
+INSTANCE_IP_ADDRESS=$(gcloud compute instances list  | awk "/^${INSTANCE_NAME}/ {print \$5}")
+echo "${INSTANCE_NAME}" > "instance-data/instance-name"
+echo "${INSTANCE_IP_ADDRESS}" > "instance-data/instance-ip-address"
+echo "${PROJECT}" > "instance-data/project"
+echo "${ZONE}" > "instance-data/zone"

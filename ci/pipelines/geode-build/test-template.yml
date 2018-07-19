@@ -47,7 +47,6 @@ jobs:
       image: alpine-tools-image
       config:
         inputs:
-          - name: concourse-metadata
           - name: geode-ci
           - name: geode
           - name: instance-data
@@ -60,8 +59,8 @@ jobs:
         image: alpine-tools-image
         config:
           inputs:
-            - name: concourse-metadata
             - name: geode-ci
+            - name: instance-data
           platform: linux
           run:
             path: geode-ci/ci/scripts/stop_instance.sh

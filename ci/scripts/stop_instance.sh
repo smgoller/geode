@@ -30,13 +30,11 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-BUILD_NAME=$(cat concourse-metadata/build-name)
-BUILD_JOB_NAME=$(cat concourse-metadata/build-job-name)
-BUILD_PIPELINE_NAME=$(cat concourse-metadata/build-pipeline-name)
+INSTANCE_NAME="$(cat instance-data/instance-name)"
+INSTANCE_IP_ADDRESS="$(cat instance-data/instance-ip-address)"
+PROJECT="$(cat instance-data/project)"
+ZONE="$(cat instance-data/zone)"
 
-INSTANCE_NAME="$(echo "geode-builder-${BUILD_PIPELINE_NAME}-${BUILD_JOB_NAME}-${BUILD_NAME}" | tr '[:upper:]' '[:lower:]')"
-PROJECT=apachegeode-ci
-ZONE=us-central1-f
 
 echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 
