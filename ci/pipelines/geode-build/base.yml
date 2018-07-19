@@ -49,6 +49,7 @@ resources:
 - name: geode
   type: git
   source:
+    depth: 1
     uri: (( concat "https://github.com/" metadata.geode-fork "/geode.git" ))
     branch: (( grab metadata.geode-build-branch ))
     ignore_paths:
