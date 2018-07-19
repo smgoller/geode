@@ -48,6 +48,6 @@ gcloud compute --project=${PROJECT} instances create ${INSTANCE_NAME} \
 CREATE_EXIT_STATUS=$?
 
 
-while ! gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${ZONE} -- true; do
+while ! gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${ZONE} --quiet -- true; do
   echo -n .
 done
