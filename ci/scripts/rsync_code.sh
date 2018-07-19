@@ -20,8 +20,6 @@
 set -e
 set -x
 
-env
-
 BASE_DIR=$(pwd)
 
 SOURCE="${BASH_SOURCE[0]}"
@@ -32,9 +30,9 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-
 REPODIR=$(cd geode; git rev-parse --show-toplevel)
 
+SSHKEY_FILE="instance-data/sshkey"
 BUILD_NAME=$(cat concourse-metadata/build-name)
 BUILD_JOB_NAME=$(cat concourse-metadata/build-job-name)
 BUILD_PIPELINE_NAME=$(cat concourse-metadata/build-pipeline-name)
@@ -47,8 +45,6 @@ ZONE=us-central1-f
 echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 
 # generate an ssh key for us to use
-gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${ZONE} --quiet -- true
+gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${ZONE} --ssh-key-file=${SSHKEY_FILE} --quiet -- true
 
-rsync -e "ssh -i $HOME/.ssh/google_compute_engine" -azh ${REPODIR} geode@${INSTANCE_IP_ADDRESS}:.
-
-gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${ZONE} --quiet -- ls -lR
+rsync -e "ssh -i ${SSHKEY_FILE}" -azh ${REPODIR} geode@${INSTANCE_IP_ADDRESS}:.

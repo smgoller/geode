@@ -17,10 +17,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set +e
+set -e
 set -x
-
-env
 
 BASE_DIR=$(pwd)
 
@@ -32,6 +30,7 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
+SSHKEY_FILE="instance-data/sshkey"
 BUILD_NAME=$(cat concourse-metadata/build-name)
 BUILD_JOB_NAME=$(cat concourse-metadata/build-job-name)
 BUILD_PIPELINE_NAME=$(cat concourse-metadata/build-pipeline-name)
@@ -52,6 +51,6 @@ gcloud compute --project=${PROJECT} instances create ${INSTANCE_NAME} \
 CREATE_EXIT_STATUS=$?
 
 
-while ! gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${ZONE} --quiet -- true; do
+while ! gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${ZONE} --ssh-key-file=${SSHKEY_FILE} --quiet -- true; do
   echo -n .
 done
