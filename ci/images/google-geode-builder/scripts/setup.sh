@@ -19,10 +19,8 @@ set -x
 set -e
 
 export CHROME_DRIVER_VERSION=2.35
-export GRADLE_USER_HOME=/usr/local/maven_files
 export LOCAL_USER=geode
 
-mkdir -p ${GRADLE_USER_HOME}
 apt-get update
 apt-get install -y --no-install-recommends \
   apt-transport-https \
@@ -68,7 +66,5 @@ chmod 755 /opt/selenium/chromedriver-${CHROME_DRIVER_VERSION}
 ln -fs /opt/selenium/chromedriver-${CHROME_DRIVER_VERSION} /usr/bin/chromedriver
 adduser --disabled-password --gecos "" ${LOCAL_USER}
 usermod -G docker,google-sudoers -a ${LOCAL_USER}
-chown -R ${LOCAL_USER} ${GRADLE_USER_HOME}
-echo "export GRADLE_USER_HOME=${GRADLE_USER_HOME}" > /etc/profile.d/gradle_home.sh
 apt-get clean
 rm -rf /var/lib/apt/lists/*
