@@ -35,6 +35,7 @@ jobs:
       config:
         inputs:
           - name: geode-ci
+          - name: geode
         platform: linux
         run:
           path: geode-ci/ci/scripts/start_instance.sh
