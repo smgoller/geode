@@ -17,7 +17,6 @@
 ---
 jobs:
 - name: (( grab metadata.job.name ))
-  serial: true
   public: true
   plan:
   - do:
