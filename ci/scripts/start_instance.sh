@@ -38,6 +38,9 @@ BUILD_PIPELINE_NAME=$(cat concourse-metadata/build-pipeline-name)
 INSTANCE_NAME="$(echo "geode-builder-${BUILD_PIPELINE_NAME}-${BUILD_JOB_NAME}-${BUILD_NAME}" | tr '[:upper:]' '[:lower:]')"
 PROJECT=apachegeode-ci
 ZONE=us-central1-f
+echo "${INSTANCE_NAME}" > "instance-data/instance-name"
+echo "${PROJECT}" > "instance-data/project"
+echo "${ZONE}" > "instance-data/zone"
 
 echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 
@@ -56,7 +59,4 @@ while ! gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${
 done
 
 INSTANCE_IP_ADDRESS=$(gcloud compute instances list  | awk "/^${INSTANCE_NAME}/ {print \$5}")
-echo "${INSTANCE_NAME}" > "instance-data/instance-name"
 echo "${INSTANCE_IP_ADDRESS}" > "instance-data/instance-ip-address"
-echo "${PROJECT}" > "instance-data/project"
-echo "${ZONE}" > "instance-data/zone"
