@@ -53,12 +53,11 @@ resources:
     branch: ((!geode-build-branch))
     paths:
     - ci/pipelines/metrics.yml
-- name: apachegeode-build-concourse-docker-image
+
+- name: alpine-docker-image
   type: docker-image
   source:
-    username: ((!docker-username))
-    password: ((!docker-password))
-    repository: gcr.io/apachegeode-ci/apachegeode-build-concourse
+    repository: alpine
 
 jobs:
 - name: set-pipeline
@@ -67,9 +66,9 @@ jobs:
   plan:
   - get: geode-pipeline
     trigger: true
-  - get: apachegeode-build-concourse-docker-image
+  - get: alpine-docker-image
   - task: deploy-build
-    image: apachegeode-build-concourse-docker-image
+    image: alpine-docker-image
     config:
       inputs:
       - name: geode-pipeline
@@ -84,7 +83,12 @@ jobs:
         CONCOURSE_PASSWORD: ((!concourse-password))
         CONCOURSE_TEAM: ((!concourse-team))
       run:
-        path: geode-pipeline/ci/pipelines/geode-build/deploy_pipeline.sh
+        path: sh
+        args:
+        - -c
+        - |
+          apk --no-cache add bash
+          geode-pipeline/ci/pipelines/geode-build/deploy_pipeline.sh
 
 - name: set-pr-pipeline
   serial: true
@@ -92,9 +96,9 @@ jobs:
   plan:
   - get: geode-pipeline
     trigger: true
-  - get: apachegeode-build-concourse-docker-image
+  - get: alpine-docker-image
   - task: deploy-pr
-    image: apachegeode-build-concourse-docker-image
+    image: alpine-docker-image
     config:
       inputs:
       - name: geode-pipeline
@@ -109,7 +113,12 @@ jobs:
         CONCOURSE_PASSWORD: ((!concourse-password))
         CONCOURSE_TEAM: ((!concourse-team))
       run:
-        path: geode-pipeline/ci/pipelines/pull-request/deploy_pr_pipeline.sh
+        path: sh
+        args:
+        - -c
+        - |
+          apk --no-cache add bash
+          geode-pipeline/ci/pipelines/pull-request/deploy_pr_pipeline.sh
 
 - name: set-images-pipeline
   serial: true
@@ -117,9 +126,9 @@ jobs:
   plan:
   - get: geode-images-pipeline
     trigger: true
-  - get: apachegeode-build-concourse-docker-image
+  - get: alpine-docker-image
   - task: deploy-images
-    image: apachegeode-build-concourse-docker-image
+    image: alpine-docker-image
     config:
       inputs:
       - name: geode-images-pipeline
@@ -135,7 +144,12 @@ jobs:
         CONCOURSE_TEAM: ((!concourse-team))
         PUBLIC_PIPELINES: ((!public-pipelines))
       run:
-        path: geode-images-pipeline/ci/pipelines/images/deploy_images_pipeline.sh
+        path: sh
+        args:
+        - -c
+        - |
+          apk --no-cache add bash
+          geode-images-pipeline/ci/pipelines/images/deploy_images_pipeline.sh
 
 - name: set-metrics-pipeline
   serial: true
