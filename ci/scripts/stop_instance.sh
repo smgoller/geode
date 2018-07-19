@@ -40,16 +40,6 @@ INSTANCE_NAME="$(echo "geode-builder-${BUILD_PIPELINE_NAME}-${BUILD_JOB_NAME}-${
 PROJECT=apachegeode-ci
 ZONE=us-central1-f
 
-gcloud compute --project=${PROJECT} instances create ${INSTANCE_NAME} \
+gcloud compute --project=${PROJECT} instances delete ${INSTANCE_NAME} \
   --zone=${ZONE} \
-  --machine-type=n1-standard-1 \
-  --image-family=geode-builder \
-  --image-project=${PROJECT} \
-  --boot-disk-size=100GB \
-  --boot-disk-type=pd-ssd
-CREATE_EXIT_STATUS=$?
-
-
-while ! gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${ZONE} --quiet -- true; do
-  echo -n .
-done
+  --quiet
