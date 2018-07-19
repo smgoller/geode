@@ -41,6 +41,16 @@ jobs:
         platform: linux
         run:
           path: geode-ci/ci/scripts/start_instance.sh
+    - task: rsync_code
+      image: alpine-tools-image
+      config:
+        inputs:
+          - name: concourse-metadata
+          - name: geode-ci
+          - name: geode
+        platform: linux
+        run:
+          path: geode-ci/ci/scripts/rsync_code.sh
     ensure:
       do:
       - task: stop_instance
