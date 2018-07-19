@@ -46,7 +46,7 @@ echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 
 gcloud compute --project=${PROJECT} instances create ${INSTANCE_NAME} \
   --zone=${ZONE} \
-  --machine-type=n1-standard-1 \
+  --machine-type=n1-standard-8 \
   --image-family=geode-builder \
   --image-project=${PROJECT} \
   --boot-disk-size=100GB \
