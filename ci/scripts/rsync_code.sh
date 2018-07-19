@@ -47,4 +47,4 @@ ZONE=us-central1-f
 # generate an ssh key for us to use
 gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${ZONE} --quiet -- true
 
-rsync -e "ssh -i $HOME/.ssh/google_compute_engine" -aPzh ${REPODIR} geode@${INSTANCE_IP_ADDRESS}:.
+rsync -e "ssh -i $HOME/.ssh/google_compute_engine" -azh ${REPODIR} geode@${INSTANCE_IP_ADDRESS}:.
