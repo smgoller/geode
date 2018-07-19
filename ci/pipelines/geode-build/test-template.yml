@@ -87,15 +87,34 @@ jobs:
             path: geode-ci/ci/scripts/rsync_code_down.sh
       ensure:
         do:
-        - task: stop_instance
-          image: alpine-tools-image
-          config:
-            inputs:
-              - name: geode-ci
-              - name: instance-data
-            platform: linux
-            run:
-              path: geode-ci/ci/scripts/stop_instance.sh
+        - aggregate:
+          - task: archive_results
+            image: alpine-tools-image
+            config:
+              inputs:
+                - name: concourse-metadata
+                - name: geode-ci
+                - name: geode-build-version
+                - name: geode-results
+              platform: linux
+              params:
+                MAINTENANCE_VERSION: (( grab metadata.geode-build-branch ))
+                SERVICE_ACCOUNT: ((!concourse-gcp-account))
+                PUBLIC_BUCKET: ((!public-bucket))
+              run:
+                args:
+                - (( grab metadata.job.gradle_task ))
+                - (( grab metadata.job.artifact_slug ))
+                path: geode-ci/ci/scripts/archive_results.sh
+          - task: stop_instance
+            image: alpine-tools-image
+            config:
+              inputs:
+                - name: geode-ci
+                - name: instance-data
+              platform: linux
+              run:
+                path: geode-ci/ci/scripts/stop_instance.sh
 
 #    - task: runtests
 #      image: alpine-tools-image

@@ -45,4 +45,4 @@ echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 GRADLE_TASK=${1}
 BASE_FILENAME=${2}
 
-ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "cd geode && ./gradlew --parallel --console=verbose ${GRADLE_TASK} --tests org.apache.geode.BundledJarsJUnitTest"
+ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "cd geode && ./gradlew --parallel --console=verbose ${GRADLE_TASK} combineReports --tests org.apache.geode.BundledJarsJUnitTest"
