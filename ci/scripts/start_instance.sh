@@ -46,12 +46,13 @@ if [[ -z "${GEODE_BRANCH}" ]]; then
 fi
 
 
-if [[ "${GEODE_FORK}" != "apache" ]]; then
-  IMAGE_FAMILY_PREFIX="${GEODE_FORK}-${SANITIZED_GEODE_BRANCH}-"
-fi
 
 SANITIZED_GEODE_BRANCH=$(echo ${GEODE_BRANCH} | tr "/" "-" | tr '[:upper:]' '[:lower:]')
 IMAGE_FAMILY_PREFIX=""
+
+if [[ "${GEODE_FORK}" != "apache" ]]; then
+  IMAGE_FAMILY_PREFIX="${GEODE_FORK}-${SANITIZED_GEODE_BRANCH}-"
+fi
 
 INSTANCE_NAME="$(echo "geode-builder-${BUILD_PIPELINE_NAME}-${BUILD_JOB_NAME}-${BUILD_NAME}" | tr '[:upper:]' '[:lower:]')"
 PROJECT=apachegeode-ci
