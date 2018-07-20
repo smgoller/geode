@@ -36,9 +36,18 @@ BUILD_PIPELINE_NAME=$(cat concourse-metadata/build-pipeline-name)
 
 BUILDROOT=$(pwd)
 DEST_DIR=${BUILDROOT}/geode-results
-GRADLE_TASK=${1}
+
+if [[ -z "${GRADLE_TASK}" ]]; then
+  echo "GRADLE_TASK must be set. exiting..."
+  exit 1
+fi
+
+if [[ -z "${ARTIFACT_SLUG}" ]]; then
+  echo "ARTIFACT_SLUG must be set. exiting..."
+  exit 1
+fi
+
 SANITIZED_GRADLE_TASK=${GRADLE_TASK##*:}
-BASE_FILENAME=${2}
 TMPDIR=${DEST_DIR}/tmp
 GEODE_BUILD=${DEST_DIR}/geode
 GEODE_BUILD_VERSION_NUMBER=$(grep "versionNumber *=" ${GEODE_BUILD}/gradle.properties | awk -F "=" '{print $2}' | tr -d ' ')
@@ -81,12 +90,12 @@ mkdir -p ${TMPDIR}
 
 echo "TMPDIR = ${TMPDIR}"
 echo "GRADLE_TASK = ${GRADLE_TASK}"
-echo "BASE_FILENAME = ${BASE_FILENAME}"
+echo "ARTIFACT_SLUG = ${ARTIFACT_SLUG}"
 
 gcloud config set account ${SERVICE_ACCOUNT}
 
 
-FILENAME=${BASE_FILENAME}-${FULL_PRODUCT_VERSION}.tgz
+FILENAME=${ARTIFACT_SLUG}-${FULL_PRODUCT_VERSION}.tgz
 
 pushd ${GEODE_BUILD}
 

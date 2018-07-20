@@ -20,10 +20,23 @@
 
 export TERM=${TERM:-dumb}
 export PAGER=cat
-export BUILDROOT=$(pwd)
-export DEST_DIR=${BUILDROOT}/built-geode
-export GEODE_BUILD=${DEST_DIR}/test
+
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+
+export GEODE_BUILD=${DEST_DIR}/geode
 export CALLSTACKS_DIR=${GEODE_BUILD}/callstacks
+
+if [[ -z "${PARALLEL_DUNIT}" ]]; then
+  echo "PARALLEL_DUNIT must be set. exiting..."
+  exit 1
+fi
 
 #SLEEP_TIME is in seconds
 SLEEP_TIME=${1}

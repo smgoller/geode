@@ -30,7 +30,13 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
+if [[ -z "${GRADLE_TASK}" ]]; then
+  echo "GRADLE_TASK must be set. exiting..."
+  exit 1
+fi
+
 REPODIR=$(cd geode; git rev-parse --show-toplevel)
+
 
 SSHKEY_FILE="instance-data/sshkey"
 
@@ -42,7 +48,6 @@ ZONE="$(cat instance-data/zone)"
 
 echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 
-GRADLE_TASK=${1}
-BASE_FILENAME=${2}
+scp -i ${SSHKEY_FILE} ${SCRIPTDIR}/capture-call-stacks.sh geode@${INSTANCE_IP_ADDRESS}:.
 
-ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "cd geode && ./gradlew --parallel --console=verbose ${GRADLE_TASK} --tests org.apache.geode.BundledJarsJUnitTest combineReports"
+ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "nohup sh -c \"( ( PARALELL_DUNIT=${PARALLEL_DUNIT} ~/bin/capture-call-stacks.sh ${CALL_STACK_TIMEOUT} &>/dev/null ) & )\" &&cd geode && ./gradlew --parallel --console=verbose ${GRADLE_TASK} --tests org.apache.geode.BundledJarsJUnitTest combineReports"

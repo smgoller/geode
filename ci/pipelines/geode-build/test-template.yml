@@ -69,10 +69,11 @@ jobs:
           PARALLEL_DUNIT: (( grab metadata.job.dunit.parallel ))
           DUNIT_PARALLEL_FORKS: (( grab metadata.job.dunit.forks ))
           CALL_STACK_TIMEOUT: (( grab metadata.job.call_stack_timeout ))
+          CPUS: (( grab metadata.job.cpus ))
+          RAM: (( grab metadata.job.ram ))
+          GRADLE_TASK: (( grab metadata.job.gradle_task ))
+          ARTIFACT_SLUG: (( grab metadata.job.artifact_slug ))
         run:
-          args:
-          - (( grab metadata.job.gradle_task ))
-          - (( grab metadata.job.artifact_slug ))
           path: geode-ci/ci/scripts/execute_build.sh
     ensure:
       do:
@@ -103,10 +104,9 @@ jobs:
                 MAINTENANCE_VERSION: (( grab metadata.geode-build-branch ))
                 SERVICE_ACCOUNT: ((!concourse-gcp-account))
                 PUBLIC_BUCKET: ((!public-bucket))
+                GRADLE_TASK: (( grab metadata.job.gradle_task ))
+                ARTIFACT_SLUG: (( grab metadata.job.artifact_slug ))
               run:
-                args:
-                - (( grab metadata.job.gradle_task ))
-                - (( grab metadata.job.artifact_slug ))
                 path: geode-ci/ci/scripts/archive_results.sh
           - task: stop_instance
             image: alpine-tools-image
