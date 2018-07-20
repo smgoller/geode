@@ -92,7 +92,6 @@ jobs:
   - aggregate:
     - get: apachegeode-build-concourse-docker-image
       passed: [build-apachegeode-build-concourse-docker-image]
-      skip_download: true
       trigger: true
     - get: google-geode-builder
       trigger: true
