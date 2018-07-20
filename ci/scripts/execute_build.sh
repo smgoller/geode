@@ -50,4 +50,4 @@ echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 
 scp -i ${SSHKEY_FILE} ${SCRIPTDIR}/capture-call-stacks.sh geode@${INSTANCE_IP_ADDRESS}:.
 
-ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "nohup sh -c \"( ( PARALELL_DUNIT=${PARALLEL_DUNIT} ~/bin/capture-call-stacks.sh ${CALL_STACK_TIMEOUT} &>/dev/null ) & )\" &&cd geode && ./gradlew --parallel --console=verbose ${GRADLE_TASK} --tests org.apache.geode.BundledJarsJUnitTest combineReports"
+ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "nohup sh -c \"( ( PARALELL_DUNIT=${PARALLEL_DUNIT} ~/capture-call-stacks.sh ${CALL_STACK_TIMEOUT} &>/dev/null ) & )\" &&cd geode && ./gradlew --parallel --console=verbose ${GRADLE_TASK} --tests org.apache.geode.BundledJarsJUnitTest combineReports"
