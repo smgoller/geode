@@ -40,6 +40,8 @@ jobs:
         outputs:
           - name: instance-data
         platform: linux
+        params:
+          GEODE_FORK: (( grab metadata.geode-fork ))
         run:
           path: geode-ci/ci/scripts/start_instance.sh
     - task: rsync_code_up

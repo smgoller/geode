@@ -1,4 +1,7 @@
 {
+  "variables": {
+    "image_family_prefix": ""
+  },
   "provisioners": [
     {
       "type": "shell",
@@ -22,8 +25,8 @@
       "source_image_family": "debian-9",
       "ssh_username": "packer",
       "zone": "us-central1-f",
-      "image_family": "geode-builder",
-      "image_name": "geode-builder-{{timestamp}}"
+      "image_family": "{{user `image_family_prefix`}}geode-builder",
+      "image_name": "{{user `image_family_prefix`}}geode-builder-{{timestamp}}"
     }
   ]
 }

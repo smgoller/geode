@@ -25,10 +25,20 @@ done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 pushd ${SCRIPTDIR}
-echo "Setting up credentials for packer"
 
-#CREDENTIALS_FILE=concourse-key.json
-#echo "${GCP_CONCOURSE_KEY}" | base64 -d > ${CREDENTIALS_FILE}
-#export GOOGLE_APPLICATION_CREDENTIALS=${CREDENTIALS_FILE}
+GEODE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+SANITIZED_GEODE_BRANCH=$(echo ${GEODE_BRANCH} | tr "/" "-" | tr '[:upper:]' '[:lower:]')
+IMAGE_FAMILY_PREFIX=""
+
+if [[ -z "${GEODE_FORK}" ]]; then
+  echo "GEODE_FORK environment variable must be set for this script to work."
+  exit 1
+fi
+
+
+if [[ "${GEODE_FORK}" != "apache" ]]; then
+  IMAGE_FAMILY_PREFIX="${GEODE_FORK}-${SANITIZED_GEODE_BRANCH}-"
+fi
+
 echo "Running packer"
-packer build packer.json
+packer build --var "image_family_prefix=${IMAGE_FAMILY_PREFIX}" packer.json

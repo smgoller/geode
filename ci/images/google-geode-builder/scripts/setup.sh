@@ -41,9 +41,7 @@ apt-get install -y --no-install-recommends \
     docker-compose \
     docker-ce \
     git \
-    golang \
     google-chrome-stable \
-    google-cloud-sdk \
     htop \
     jq \
     openjdk-8-jdk-headless \
@@ -52,9 +50,16 @@ apt-get install -y --no-install-recommends \
     rsync \
     unzip \
     vim
+pushd /tmp
+  curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz
+  tar xzf google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz -C /
+  rm google-cloud-sdk-${CLOUD_SDK_VERSION}-linux-x86_64.tar.gz
+popd
+export PATH=/google-cloud-sdk/bin:${PATH}
 gcloud config set core/disable_usage_reporting true
 gcloud config set component_manager/disable_update_check true
 gcloud config set metrics/environment github_docker_image
+gcloud components install docker-credential-gcr --quiet
 curl -Lo /usr/local/bin/dunit-progress https://github.com/jdeppe-pivotal/progress-util/releases/download/0.2/progress.linux
 chmod +x /usr/local/bin/dunit-progress
 wget --no-verbose -O /tmp/chromedriver_linux64.zip https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip
@@ -66,5 +71,7 @@ chmod 755 /opt/selenium/chromedriver-${CHROME_DRIVER_VERSION}
 ln -fs /opt/selenium/chromedriver-${CHROME_DRIVER_VERSION} /usr/bin/chromedriver
 adduser --disabled-password --gecos "" ${LOCAL_USER}
 usermod -G docker,google-sudoers -a ${LOCAL_USER}
+echo "export PATH=/google-cloud-sdk/bin:${PATH}" > /etc/profile.d/google_sdk_path.sh
+
 apt-get clean
 rm -rf /var/lib/apt/lists/*
