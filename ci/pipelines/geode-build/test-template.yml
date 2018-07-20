@@ -41,6 +41,7 @@ jobs:
           - name: instance-data
         platform: linux
         params:
+          GEODE_BRANCH: (( grab metadata.geode-build-branch ))
           GEODE_FORK: (( grab metadata.geode-fork ))
         run:
           path: geode-ci/ci/scripts/start_instance.sh

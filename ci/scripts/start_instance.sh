@@ -34,12 +34,14 @@ SSHKEY_FILE="instance-data/sshkey"
 BUILD_NAME=$(cat concourse-metadata/build-name)
 BUILD_JOB_NAME=$(cat concourse-metadata/build-job-name)
 BUILD_PIPELINE_NAME=$(cat concourse-metadata/build-pipeline-name)
-GEODE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-SANITIZED_GEODE_BRANCH=$(echo ${GEODE_BRANCH} | tr "/" "-" | tr '[:upper:]' '[:lower:]')
-IMAGE_FAMILY_PREFIX=""
 
 if [[ -z "${GEODE_FORK}" ]]; then
   echo "GEODE_FORK environment variable must be set for this script to work."
+  exit 1
+fi
+
+if [[ -z "${GEODE_BRANCH}" ]]; then
+  echo "GEODE_BRANCH environment variable must be set for this script to work."
   exit 1
 fi
 
@@ -47,6 +49,10 @@ fi
 if [[ "${GEODE_FORK}" != "apache" ]]; then
   IMAGE_FAMILY_PREFIX="${GEODE_FORK}-${SANITIZED_GEODE_BRANCH}-"
 fi
+
+GEODE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+SANITIZED_GEODE_BRANCH=$(echo ${GEODE_BRANCH} | tr "/" "-" | tr '[:upper:]' '[:lower:]')
+IMAGE_FAMILY_PREFIX=""
 
 INSTANCE_NAME="$(echo "geode-builder-${BUILD_PIPELINE_NAME}-${BUILD_JOB_NAME}-${BUILD_NAME}" | tr '[:upper:]' '[:lower:]')"
 PROJECT=apachegeode-ci
