@@ -33,16 +33,21 @@ SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 export GEODE_BUILD=${DEST_DIR}/geode
 export CALLSTACKS_DIR=${GEODE_BUILD}/callstacks
 
-if [[ -z "${PARALLEL_DUNIT}" ]]; then
-  echo "PARALLEL_DUNIT must be set. exiting..."
-  exit 1
-fi
-
 #SLEEP_TIME is in seconds
 PARALLEL_DUNIT=${1}
 SLEEP_TIME=${2}
 COUNT=3
 STACK_INTERVAL=5
+
+if [[ -z "${PARALLEL_DUNIT}" ]]; then
+  echo "PARALLEL_DUNIT must be set. exiting..."
+  exit 1
+fi
+
+if [[ -z "${SLEEP_TIME}" ]]; then
+  echo "SLEEP_TIME must be set. exiting..."
+  exit 1
+fi
 
 
 mkdir -p ${CALLSTACKS_DIR}
