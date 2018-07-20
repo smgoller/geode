@@ -50,7 +50,6 @@ if [[ "${GEODE_FORK}" != "apache" ]]; then
   IMAGE_FAMILY_PREFIX="${GEODE_FORK}-${SANITIZED_GEODE_BRANCH}-"
 fi
 
-GEODE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 SANITIZED_GEODE_BRANCH=$(echo ${GEODE_BRANCH} | tr "/" "-" | tr '[:upper:]' '[:lower:]')
 IMAGE_FAMILY_PREFIX=""
 
