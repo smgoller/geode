@@ -38,7 +38,6 @@ resources:
   source:
     repository: openjdk
     tag: 8
-    skip_download: true
 
 - name: google-geode-builder
   type: git
@@ -91,6 +90,10 @@ jobs:
   serial: true
   plan:
   - aggregate:
+    - get: apachegeode-build-concourse-docker-image
+      passed: [build-apachegeode-build-concourse-docker-image]
+      skip_download: true
+      trigger: true
     - get: google-geode-builder
       trigger: true
     - get: alpine-tools-docker-image
@@ -105,6 +108,7 @@ jobs:
       params:
         GEODE_FORK: ((!geode-fork))
         GEODE_BRANCH: ((!geode-build-branch))
+        GEODE_DOCKER_IMAGE: gcr.io/apachegeode-ci/((!docker-image-prefix))((!docker-image-name))
       run:
         path: google-geode-builder/ci/images/google-geode-builder/build_image.sh
 

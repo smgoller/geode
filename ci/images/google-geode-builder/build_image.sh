@@ -29,7 +29,7 @@ pushd ${SCRIPTDIR}
 GEODE_BRANCH=${GEODE_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
 SANITIZED_GEODE_BRANCH=$(echo ${GEODE_BRANCH} | tr "/" "-" | tr '[:upper:]' '[:lower:]')
 IMAGE_FAMILY_PREFIX=""
-
+GEODE_DOCKER_IMAGE=${GEODE_DOCKER_IMAGE:-"gcr.io/apachegeode-ci/apachegeode-build-concourse"}
 if [[ -z "${GEODE_FORK}" ]]; then
   echo "GEODE_FORK environment variable must be set for this script to work."
   exit 1
@@ -41,4 +41,7 @@ if [[ "${GEODE_FORK}" != "apache" ]]; then
 fi
 
 echo "Running packer"
-packer build --var "image_family_prefix=${IMAGE_FAMILY_PREFIX}" packer.json
+packer build \
+  --var "geode_docker_image=${GEODE_DOCKER_IMAGE}" \
+  --var "image_family_prefix=${IMAGE_FAMILY_PREFIX}" \
+  packer.json

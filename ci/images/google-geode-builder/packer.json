@@ -1,6 +1,7 @@
 {
   "variables": {
-    "image_family_prefix": ""
+    "image_family_prefix": "",
+    "geode_docker_image": ""
   },
   "provisioners": [
     {
@@ -9,6 +10,9 @@
     },
     {
       "type": "shell",
+      "environment_vars": [
+        "GEODE_DOCKER_IMAGE={{user `geode_docker_image`}}"
+      ],
       "execute_command": "sudo -S sh -c '{{ .Vars }} {{ .Path }}'",
       "script": "scripts/setup.sh"
     },
