@@ -39,7 +39,8 @@ if [[ -z "${PARALLEL_DUNIT}" ]]; then
 fi
 
 #SLEEP_TIME is in seconds
-SLEEP_TIME=${1}
+PARALLEL_DUNIT=${1}
+SLEEP_TIME=${2}
 COUNT=3
 STACK_INTERVAL=5
 
