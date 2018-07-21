@@ -30,7 +30,7 @@ done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 
-export GEODE_BUILD=${DEST_DIR}/geode
+export GEODE_BUILD=~/geode
 export CALLSTACKS_DIR=${GEODE_BUILD}/callstacks
 
 #SLEEP_TIME is in seconds

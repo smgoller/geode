@@ -46,6 +46,7 @@ apt-get install -y --no-install-recommends \
     python3 \
     python3-pip \
     rsync \
+    tmux \
     unzip \
     vim
 pushd /tmp

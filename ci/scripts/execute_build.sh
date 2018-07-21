@@ -50,5 +50,5 @@ echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 
 scp -i ${SSHKEY_FILE} ${SCRIPTDIR}/capture-call-stacks.sh geode@${INSTANCE_IP_ADDRESS}:.
 
-ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "nohup sh -c \"( ( ~/capture-call-stacks.sh ${PARALLEL_DUNIT} ${CALL_STACK_TIMEOUT} &>/dev/null ) & )\""
+ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "tmux new-session -d -s callstacks; tmux send-keys  ~/capture-call-stacks.sh\ ${PARALLEL_DUNIT}\ ${CALL_STACK_TIMEOUT} C-m"
 ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "cd geode && ./gradlew --parallel --console=verbose :geode-assembly:${GRADLE_TASK} --tests org.apache.geode.BundledJarsJUnitTest combineReports"  # TODO: Remove :geode-assembly and --tests org.*Test
