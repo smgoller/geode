@@ -62,10 +62,10 @@ echo "${PROJECT}" > "instance-data/project"
 echo "${ZONE}" > "instance-data/zone"
 
 echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
-
+RAM_MEGABYTES=$(expr ${RAM} * 1024)
 gcloud compute --project=${PROJECT} instances create ${INSTANCE_NAME} \
   --zone=${ZONE} \
-  --machine-type=custom-8-30720 \
+  --machine-type=custom-${CPUS}-${RAM_MEGABYTES} \
   --min-cpu-platform=Intel\ Skylake \
   --image-family="${IMAGE_FAMILY_PREFIX}geode-builder" \
   --image-project=${PROJECT} \
