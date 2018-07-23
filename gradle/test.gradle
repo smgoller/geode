@@ -33,6 +33,8 @@ gradle.taskGraph.whenReady({ graph ->
 
 
 subprojects {
+  apply plugin: 'com.adarshr.test-logger'
+
   dependencies {
     testCompile ('com.github.stefanbirkner:system-rules:' + project.'system-rules.version') {
       exclude module: 'junit-dep'
