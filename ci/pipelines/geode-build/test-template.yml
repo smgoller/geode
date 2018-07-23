@@ -41,6 +41,8 @@ jobs:
           - name: instance-data
         platform: linux
         params:
+          CPUS: (( grab metadata.job.cpus ))
+          RAM: (( grab metadata.job.ram ))
           GEODE_BRANCH: (( grab metadata.geode-build-branch ))
           GEODE_FORK: (( grab metadata.geode-fork ))
         run:
@@ -70,8 +72,6 @@ jobs:
           PARALLEL_DUNIT: (( grab metadata.job.dunit.parallel ))
           DUNIT_PARALLEL_FORKS: (( grab metadata.job.dunit.forks ))
           CALL_STACK_TIMEOUT: (( grab metadata.job.call_stack_timeout ))
-          CPUS: (( grab metadata.job.cpus ))
-          RAM: (( grab metadata.job.ram ))
           GRADLE_TASK: (( grab metadata.job.gradle_task ))
           GRADLE_TASK_OPTIONS: (( grab metadata.job.gradle_task_options || "" ))
           ARTIFACT_SLUG: (( grab metadata.job.artifact_slug ))
