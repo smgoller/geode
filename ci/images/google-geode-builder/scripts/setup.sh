@@ -42,6 +42,7 @@ apt-get install -y --no-install-recommends \
     google-chrome-stable \
     htop \
     jq \
+    less \
     openjdk-8-jdk-headless \
     python3 \
     python3-pip \
