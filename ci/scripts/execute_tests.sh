@@ -52,8 +52,22 @@ echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 
 scp -i ${SSHKEY_FILE} ${SCRIPTDIR}/capture-call-stacks.sh geode@${INSTANCE_IP_ADDRESS}:.
 
-if [ -v CALL_STACK_TIMEOUT ]; then
-  ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "tmux new-session -d -s callstacks; tmux send-keys  ~/capture-call-stacks.sh\ ${PARALLEL_DUNIT}\ ${CALL_STACK_TIMEOUT} C-m"
+
+
+if [[ -n "${PARALLEL_DUNIT}" && "${PARALLEL_DUNIT}" == "true" ]]; then
+  PARALLEL_DUNIT="-PparallelDunit"
+  if [ -n "${DUNIT_PARALLEL_FORKS}" ]; then
+    DUNIT_PARALLEL_FORKS="-PdunitParallelForks=${DUNIT_PARALLEL_FORKS}"
+  fi
+else
+  PARALLEL_DUNIT=""
+  DUNIT_PARALLEL_FORKS=""
 fi
 
-ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "cd geode && ./gradlew ${DEFAULT_GRADLE_TASK_OPTIONS} ${GRADLE_TASK_OPTIONS} ${GRADLE_TASK}"
+
+if [ -v CALL_STACK_TIMEOUT ]; then
+  ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "tmux new-session -d -s callstacks; tmux send-keys  ~/capture-call-stacks.sh\ ${CALL_STACK_TIMEOUT} C-m"
+fi
+
+ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "cd geode && ./gradlew ${PARALLEL_DUNIT} ${DUNIT_PARALLEL_FORKS} ${DUNIT_DOCKER_IMAGE} \
+      --system-prop "java.io.tmpdir=${TMPDIR}" ${DEFAULT_GRADLE_TASK_OPTIONS} ${GRADLE_TASK_OPTIONS} ${GRADLE_TASK}"
