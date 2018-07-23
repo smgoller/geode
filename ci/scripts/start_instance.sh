@@ -65,20 +65,21 @@ echo 'StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 echo "RAM is ${RAM}"
 RAM_MEGABYTES=$( expr ${RAM} \* 1024 )
 echo "RAM_MEGABYTES is ${RAM_MEGABYTES}"
-gcloud compute --project=${PROJECT} instances create ${INSTANCE_NAME} \
+INSTANCE_INFORMATION=$(gcloud compute --project=${PROJECT} instances create ${INSTANCE_NAME} \
   --zone=${ZONE} \
   --machine-type=custom-${CPUS}-${RAM_MEGABYTES} \
   --min-cpu-platform=Intel\ Skylake \
   --image-family="${IMAGE_FAMILY_PREFIX}geode-builder" \
   --image-project=${PROJECT} \
   --boot-disk-size=100GB \
-  --boot-disk-type=pd-ssd
+  --boot-disk-type=pd-ssd)
 CREATE_EXIT_STATUS=$?
 
 
 while ! gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${ZONE} --ssh-key-file=${SSHKEY_FILE} --quiet -- true; do
   echo -n .
 done
+echo "${INSTANCE_INFORMATION}" > instance-data/instance-information
 
-INSTANCE_IP_ADDRESS=$(gcloud compute instances list  | awk "/^${INSTANCE_NAME}/ {print \$5}")
+INSTANCE_IP_ADDRESS=$(echo ${INSTANCE_INFORMATION} | jq -r '.[].networkInterfaces[0].networkIP')
 echo "${INSTANCE_IP_ADDRESS}" > "instance-data/instance-ip-address"
