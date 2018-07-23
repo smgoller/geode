@@ -37,7 +37,7 @@ fi
 
 REPODIR=$(cd geode; git rev-parse --show-toplevel)
 
-DEFAULT_GRADLE_TASK_OPTIONS="--parallel --console=verbose --no-daemon -x javadoc -x spotlessCheck"
+DEFAULT_GRADLE_TASK_OPTIONS="--parallel --console=rich --no-daemon -x javadoc -x spotlessCheck"
 
 
 SSHKEY_FILE="instance-data/sshkey"
