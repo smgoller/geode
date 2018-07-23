@@ -7,6 +7,7 @@ RUN apk --no-cache add \
       bash \
       curl \
       git \
+      jq \
       openssh-client \
       python \
       py2-pip \
