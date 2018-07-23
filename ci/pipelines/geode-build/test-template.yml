@@ -55,7 +55,7 @@ jobs:
         platform: linux
         run:
           path: geode-ci/ci/scripts/rsync_code_up.sh
-    - task: execute_build
+    - task: execute_tests
       image: alpine-tools-image
       config:
         inputs:
@@ -73,9 +73,10 @@ jobs:
           CPUS: (( grab metadata.job.cpus ))
           RAM: (( grab metadata.job.ram ))
           GRADLE_TASK: (( grab metadata.job.gradle_task ))
+          GRADLE_TASK_OPTIONS: (( grab metadata.job.gradle_task_options ))
           ARTIFACT_SLUG: (( grab metadata.job.artifact_slug ))
         run:
-          path: geode-ci/ci/scripts/execute_build.sh
+          path: geode-ci/ci/scripts/execute_tests.sh
     ensure:
       do:
       - task: rsync_code_down
