@@ -82,5 +82,5 @@ while ! gcloud compute --project=${PROJECT} ssh geode@${INSTANCE_NAME} --zone=${
 done
 echo "${INSTANCE_INFORMATION}" > instance-data/instance-information
 
-INSTANCE_IP_ADDRESS=$(echo ${INSTANCE_INFORMATION} | jq -r '.[].networkInterfaces[0].networkIP')
+INSTANCE_IP_ADDRESS=$(echo ${INSTANCE_INFORMATION} | jq -r '.[].networkInterfaces[0].accessConfigs[0].natIP')
 echo "${INSTANCE_IP_ADDRESS}" > "instance-data/instance-ip-address"
