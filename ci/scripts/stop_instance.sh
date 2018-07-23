@@ -31,7 +31,6 @@ done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 INSTANCE_NAME="$(cat instance-data/instance-name)"
-INSTANCE_IP_ADDRESS="$(cat instance-data/instance-ip-address)"
 PROJECT="$(cat instance-data/project)"
 ZONE="$(cat instance-data/zone)"
 
