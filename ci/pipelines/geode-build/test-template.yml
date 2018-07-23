@@ -21,7 +21,7 @@ jobs:
   plan:
   - do:
     - aggregate:
-      - get: concourse-metadata
+      - get: concourse-metadata-resource
       - get: geode
         passed: [Build]
         trigger: true
@@ -97,7 +97,7 @@ jobs:
             image: alpine-tools-image
             config:
               inputs:
-                - name: concourse-metadata
+                - name: concourse-metadata-resource
                 - name: geode-ci
                 - name: geode-build-version
                 - name: geode-results

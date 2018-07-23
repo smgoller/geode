@@ -26,10 +26,13 @@ resource_types:
     type: docker-image
     source:
       repository: pcfseceng/email-resource
-  - name: concourse-metadata
+  - name: concourse-metadata-resource
     type: docker-image
     source:
-      repository: swce/metadata-resource
+      username: ((!docker-username))
+      password: ((!docker-password))
+      repository: gcr.io/apachegeode-ci/((!docker-image-prefix))concourse-metadata-resource
+      tag: latest
 
 resources:
 - name: docker-geode-build-image
@@ -93,8 +96,8 @@ resources:
       password: ((!source-email-password))
     from: ((!source-email-address))
     to: [ ((!notification-email-address)) ]
-- name: concourse-metadata
-  type: concourse-metadata
+- name: concourse-metadata-resource
+  type: concourse-metadata-resource
 
 groups:
 - name: main

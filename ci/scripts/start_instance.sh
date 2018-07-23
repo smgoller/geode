@@ -30,10 +30,9 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
+source ${BASE_DIR}/concourse-metadata-resource/concourse_metadata
+
 SSHKEY_FILE="instance-data/sshkey"
-BUILD_NAME=$(cat concourse-metadata/build-name)
-BUILD_JOB_NAME=$(cat concourse-metadata/build-job-name)
-BUILD_PIPELINE_NAME=$(cat concourse-metadata/build-pipeline-name)
 
 if [[ -z "${GEODE_FORK}" ]]; then
   echo "GEODE_FORK environment variable must be set for this script to work."
