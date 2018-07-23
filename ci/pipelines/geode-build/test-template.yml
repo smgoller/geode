@@ -35,7 +35,7 @@ jobs:
       image: alpine-tools-image
       config:
         inputs:
-          - name: concourse-metadata
+          - name: concourse-metadata-resource
           - name: geode-ci
         outputs:
           - name: instance-data
