@@ -15,17 +15,13 @@
 # limitations under the License.
 
 ---
-resources:
-- name: (( concat "concourse-metadata-" metadata.job.name "-resource" ))
-  type: concourse-metadata-resource
-
 jobs:
 - name: (( grab metadata.job.name ))
   public: true
   plan:
   - do:
     - aggregate:
-      - get: (( concat "concourse-metadata-" metadata.job.name "-resource" ))
+      - put: concourse-metadata-resource
       - get: geode
         passed: [Build]
         trigger: true
@@ -39,8 +35,7 @@ jobs:
       image: alpine-tools-image
       config:
         inputs:
-          - name: (( concat "concourse-metadata-" metadata.job.name "-resource" ))
-            path: concourse-metadata-resource
+          - name: concourse-metadata-resource
           - name: geode-ci
         outputs:
           - name: instance-data
@@ -102,8 +97,7 @@ jobs:
             image: alpine-tools-image
             config:
               inputs:
-                - name: (( concat "concourse-metadata-" metadata.job.name "-resource" ))
-                  path: concourse-metadata-resource
+                - name: concourse-metadata-resource
                 - name: geode-ci
                 - name: geode-build-version
                 - name: geode-results
