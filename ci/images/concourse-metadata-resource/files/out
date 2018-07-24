@@ -20,7 +20,7 @@ cat > $SCRIPT_INPUT <&0 # STDIN params
 
 VERSION=$(uuidgen)
 
-OUTPUT_STRING="[ { \"version\": { \"ref\": \"$VERSION\" } } ]"
+OUTPUT_STRING="{ \"version\": { \"ref\": \"$VERSION\" } }"
 
 echo $OUTPUT_STRING
 
