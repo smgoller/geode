@@ -110,62 +110,12 @@ jobs:
                 ARTIFACT_SLUG: (( grab metadata.job.artifact_slug ))
               run:
                 path: geode-ci/ci/scripts/archive_results.sh
-          - task: stop_instance
-            image: alpine-tools-image
-            config:
-              inputs:
-                - name: geode-ci
-                - name: instance-data
-              platform: linux
-              run:
-                path: geode-ci/ci/scripts/stop_instance.sh
-
-#    - task: runtests
-#      image: alpine-tools-image
-#      timeout: (( grab metadata.job.timeout ))
-#      config:
-#        inputs:
-#          - name: geode
-#          - name: geode-ci
-#          - name: geode-build-version
-#        platform: linux
-#        outputs:
-#          - name: built-geode
-#        params:
-#          MAINTENANCE_VERSION: (( grab metadata.geode-build-branch ))
-#          SERVICE_ACCOUNT: ((!concourse-gcp-account))
-#          PUBLIC_BUCKET: ((!public-bucket))
-#          PARALLEL_DUNIT: (( grab metadata.job.dunit.parallel ))
-#          DUNIT_PARALLEL_FORKS: (( grab metadata.job.dunit.forks ))
-#          CALL_STACK_TIMEOUT: (( grab metadata.job.call_stack_timeout ))
-#        run:
-#          args:
-#          - (( grab metadata.job.gradle_task ))
-#          - (( grab metadata.job.artifact_slug ))
-#          path: geode-ci/ci/scripts/test-run.sh
-#      on_failure:
-#        aggregate:
-#          - put: send-notification-email
-#            params:
-#              subject: built-geode/subject
-#              body: built-geode/body
-#      ensure:
-#        aggregate:
-#        - task: archive-results
-#          image: docker-geode-build-image
-#          config:
-#            inputs:
-#              - name: geode
-#              - name: geode-ci
-#              - name: geode-build-version
-#              - name: built-geode
-#            platform: linux
-#            params:
-#              MAINTENANCE_VERSION: (( grab metadata.geode-build-branch ))
-#              SERVICE_ACCOUNT: ((!concourse-gcp-account))
-#              PUBLIC_BUCKET: ((!public-bucket))
-#            run:
-#              args:
-#              - (( grab metadata.job.gradle_task ))
-#              - (( grab metadata.job.artifact_slug ))
-#              path: geode-ci/ci/scripts/test-archive.sh
+#          - task: stop_instance
+#            image: alpine-tools-image
+#            config:
+#              inputs:
+#                - name: geode-ci
+#                - name: instance-data
+#              platform: linux
+#              run:
+#                path: geode-ci/ci/scripts/stop_instance.sh
