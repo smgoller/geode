@@ -24,10 +24,10 @@ jobs:
       - put: concourse-metadata-resource
       - get: geode
         passed: [Build]
-        trigger: true
       - get: geode-ci
       - get: geode-build-version
         passed: [Build]
+        trigger: true
       - get: alpine-tools-image
         params:
           rootfs: true
