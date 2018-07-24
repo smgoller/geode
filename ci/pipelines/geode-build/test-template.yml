@@ -17,7 +17,7 @@
 ---
 resources:
 - name: (( concat "concourse-metadata-" metadata.job.name "-resource" ))
-- type: concourse-metadata-resource
+  type: concourse-metadata-resource
 
 jobs:
 - name: (( grab metadata.job.name ))
