@@ -17,7 +17,8 @@
 metadata:
   job:
     name: DistributedTest
-    gradle_task: distributedTest
+    gradle_task: :geode-assembly:distributedTest
+    gradle_task_options: --tests org.apache.geode.session.tests.Tomcat7ClientServerTest
     artifact_slug: distributedtestfiles
     dunit:
       parallel: true
