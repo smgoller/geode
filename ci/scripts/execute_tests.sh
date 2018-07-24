@@ -70,4 +70,4 @@ if [ -v CALL_STACK_TIMEOUT ]; then
 fi
 
 ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "mkdir tmp && cd geode && ./gradlew ${PARALLEL_DUNIT} ${DUNIT_PARALLEL_FORKS} -PdunitDockerImage=\$(docker images --format '{{.Repository}}:{{.Tag}}') \
-      --system-prop java.io.tmpdir=/home/geode/tmp ${DEFAULT_GRADLE_TASK_OPTIONS} ${GRADLE_TASK_OPTIONS} ${GRADLE_TASK}"
+      --system-prop java.io.tmpdir=/home/geode/tmp ${DEFAULT_GRADLE_TASK_OPTIONS} ${GRADLE_TASK} ${GRADLE_TASK_OPTIONS}"
