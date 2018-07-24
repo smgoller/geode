@@ -124,11 +124,16 @@ jobs:
     - get: geode-ci
     - get: geode-build-version
       params: {pre: build}
-    - get: docker-geode-build-image
     - task: build
-      image: docker-geode-build-image
       config:
         platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            username: ((!docker-username))
+            password: ((!docker-password))
+            repository: gcr.io/apachegeode-ci/((!docker-image-prefix))((!docker-image-name))
+            tag: latest
         inputs:
         - name: geode
         - name: geode-ci
