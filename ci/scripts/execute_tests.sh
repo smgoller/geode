@@ -69,5 +69,7 @@ if [ -v CALL_STACK_TIMEOUT ]; then
   ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "tmux new-session -d -s callstacks; tmux send-keys  ~/capture-call-stacks.sh\ ${CALL_STACK_TIMEOUT} C-m"
 fi
 
-ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "mkdir tmp && cd geode && ./gradlew ${PARALLEL_DUNIT} ${DUNIT_PARALLEL_FORKS} -PdunitDockerImage=\$(docker images --format '{{.Repository}}:{{.Tag}}') \
+ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "mkdir -p tmp && cd geode && ./gradlew ${DEFAULT_GRADLE_TASK_OPTIONS} -Dskip.tests=true build"
+
+ssh -i ${SSHKEY_FILE} geode@${INSTANCE_IP_ADDRESS} "mkdir -p tmp && cd geode && ./gradlew ${PARALLEL_DUNIT} ${DUNIT_PARALLEL_FORKS} -PdunitDockerImage=\$(docker images --format '{{.Repository}}:{{.Tag}}') \
       --system-prop java.io.tmpdir=/home/geode/tmp ${DEFAULT_GRADLE_TASK_OPTIONS} ${GRADLE_TASK} ${GRADLE_TASK_OPTIONS}"

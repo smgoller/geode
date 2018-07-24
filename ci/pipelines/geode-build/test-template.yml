@@ -110,12 +110,12 @@ jobs:
                 ARTIFACT_SLUG: (( grab metadata.job.artifact_slug ))
               run:
                 path: geode-ci/ci/scripts/archive_results.sh
-#          - task: stop_instance
-#            image: alpine-tools-image
-#            config:
-#              inputs:
-#                - name: geode-ci
-#                - name: instance-data
-#              platform: linux
-#              run:
-#                path: geode-ci/ci/scripts/stop_instance.sh
+          - task: stop_instance
+            image: alpine-tools-image
+            config:
+              inputs:
+                - name: geode-ci
+                - name: instance-data
+              platform: linux
+              run:
+                path: geode-ci/ci/scripts/stop_instance.sh
