@@ -17,7 +17,7 @@
 metadata:
   job:
     name: DistributedTest
-    gradle_task: :geode-assembly:distributedTest
+    gradle_task: distributedTest
     artifact_slug: distributedtestfiles
     dunit:
       parallel: true
