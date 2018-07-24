@@ -96,8 +96,6 @@ resources:
       password: ((!source-email-password))
     from: ((!source-email-address))
     to: [ ((!notification-email-address)) ]
-- name: concourse-metadata-resource
-  type: concourse-metadata-resource
 
 groups:
 - name: main
