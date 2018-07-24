@@ -18,7 +18,7 @@
 SCRIPT_INPUT='/tmp/input'
 cat > $SCRIPT_INPUT <&0 # STDIN params
 
-VERSION=$(jq -r '.version.ref // ""' < $SCRIPT_INPUT)
+VERSION=$(uuidgen)
 
 OUTPUT_STRING="[ { \"version\": { \"ref\": \"$VERSION\" } } ]"
 

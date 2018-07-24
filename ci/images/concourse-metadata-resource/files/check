@@ -20,9 +20,7 @@ echo "Running concourse-metadata script" 1>&2
 SCRIPT_INPUT='/tmp/input'
 cat > $SCRIPT_INPUT <&0 # STDIN params
 
-VERSION=$(uuidgen)
-
-OUTPUT_STRING="[ { \"ref\": \"$VERSION\" } ]"
+OUTPUT_STRING="[ ]"
 
 echo $OUTPUT_STRING
 
