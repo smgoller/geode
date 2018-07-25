@@ -33,6 +33,7 @@ jobs:
           rootfs: true
     - task: start_instance
       image: alpine-tools-image
+      timeout: 5m
       config:
         inputs:
           - name: concourse-metadata-resource
@@ -49,6 +50,7 @@ jobs:
           path: geode-ci/ci/scripts/start_instance.sh
     - task: rsync_code_up
       image: alpine-tools-image
+      timeout: 5m
       config:
         inputs:
           - name: geode-ci
@@ -69,6 +71,7 @@ jobs:
           path: geode-ci/ci/scripts/prepopulate_build.sh
     - task: execute_tests
       image: alpine-tools-image
+      timeout: (( grab metadata.job.timeout ))
       config:
         inputs:
           - name: geode-ci
@@ -91,6 +94,7 @@ jobs:
       do:
       - task: rsync_code_down
         image: alpine-tools-image
+        timeout: 5m
         config:
           inputs:
             - name: geode-ci
@@ -105,6 +109,7 @@ jobs:
         - aggregate:
           - task: archive_results
             image: alpine-tools-image
+            timeout: 1h
             config:
               inputs:
                 - name: concourse-metadata-resource
@@ -122,6 +127,7 @@ jobs:
                 path: geode-ci/ci/scripts/archive_results.sh
           - task: stop_instance
             image: alpine-tools-image
+            timeout: 1h
             config:
               inputs:
                 - name: geode-ci

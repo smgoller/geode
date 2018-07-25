@@ -106,7 +106,7 @@ groups:
   - DistributedTest
   - AcceptanceTest
   - IntegrationTest
-  - FlakyTest
+  - UpgradeTest
   - TestExamples
   - UpdatePassingRef
 - name: UITests
