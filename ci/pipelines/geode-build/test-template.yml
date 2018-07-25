@@ -57,6 +57,16 @@ jobs:
         platform: linux
         run:
           path: geode-ci/ci/scripts/rsync_code_up.sh
+    - task: prepopulate_build
+      image: alpine-tools-image
+      config:
+        inputs:
+          - name: geode-ci
+          - name: geode
+          - name: instance-data
+        platform: linux
+        run:
+          path: geode-ci/ci/scripts/prepopulate_build.sh
     - task: execute_tests
       image: alpine-tools-image
       config:
