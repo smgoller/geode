@@ -76,6 +76,21 @@ resources:
     password: ((!docker-password))
     repository: gcr.io/apachegeode-ci/((!docker-image-prefix))alpine-tools
 
+- name: test-container-dockerfile
+  type: git
+  source:
+    uri: https://github.com/((!geode-fork))/geode.git
+    branch: ((!geode-build-branch))
+    paths:
+    - ci/images/test-container/*
+
+- name: test-container-docker-image
+  type: docker-image
+  source:
+    username: ((!docker-username))
+    password: ((!docker-password))
+    repository: gcr.io/apachegeode-ci/((!docker-image-prefix))test-container
+
 - name: concourse-metadata-resource-dockerfile
   type: git
   source:
@@ -112,8 +127,8 @@ jobs:
   serial: true
   plan:
   - aggregate:
-    - get: apachegeode-build-concourse-docker-image
-      passed: [build-apachegeode-build-concourse-docker-image]
+    - get: test-container-docker-image
+      passed: [build-test-container-docker-image]
       trigger: true
     - get: google-geode-builder
       trigger: true
@@ -145,6 +160,20 @@ jobs:
   - put: alpine-tools-docker-image
     params:
       build: alpine-tools-dockerfile/ci/images/alpine-tools
+      tag_as_latest: true
+
+- name: build-test-container-docker-image
+  public: ((!public-pipelines))
+  serial: true
+  plan:
+  - aggregate:
+    - get: alpine37-docker-image
+      trigger: true
+    - get: test-container-dockerfile
+      trigger: true
+  - put: test-container-docker-image
+    params:
+      build: test-container-dockerfile/ci/images/test-container
       tag_as_latest: true
 
 - name: build-concourse-metadata-resource-docker-image

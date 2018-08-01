@@ -20,7 +20,7 @@ set -e
 export CLOUD_SDK_VERSION=209.0.0
 export CHROME_DRIVER_VERSION=2.35
 export LOCAL_USER=geode
-export LOCAL_UID=9304
+export LOCAL_UID=93043
 
 apt-get update
 apt-get install -y --no-install-recommends \
