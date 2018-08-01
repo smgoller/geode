@@ -18,7 +18,6 @@ ENTRYPOINT []
 
 ARG CHROME_DRIVER_VERSION=2.35
 ENV SPRUCE_VERSION 1.17.0
-ENV GRADLE_USER_HOME /usr/local/maven_files
 
 WORKDIR /tmp/work
 COPY --from=hashicorp/packer:latest /bin/packer /usr/local/bin/packer
@@ -74,6 +73,9 @@ RUN chmod +x /usr/local/bin/tini \
   && chmod 755 /opt/selenium/chromedriver-$CHROME_DRIVER_VERSION \
   && ln -fs /opt/selenium/chromedriver-$CHROME_DRIVER_VERSION /usr/bin/chromedriver \
   && ./cache_dependencies.sh \
+  && useradd --shell /bin/bash -u 9304 -o -c "" -m geode \
+  && mv /root/.gradle /home/geode/ \
+  && chown -R geode:geode /home/geode \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /tmp/work
