@@ -75,7 +75,7 @@ while true; do
 
     set +e
 # Try to kill any existing machine before starting
-    gcloud compute --project=${PROJECT} instances delete ${INSTANCE_NAME} --zone-${ZONE} --delete-disks=all
+    gcloud compute --project=${PROJECT} instances delete ${INSTANCE_NAME} --delete-disks=all
     INSTANCE_INFORMATION=$(gcloud compute --project=${PROJECT} instances create ${INSTANCE_NAME} \
       --zone=${ZONE} \
       --machine-type=custom-${CPUS}-${RAM_MEGABYTES} \
