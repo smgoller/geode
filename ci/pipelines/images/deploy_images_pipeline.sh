@@ -42,6 +42,9 @@ fi
 SANITIZED_GEODE_BRANCH=$(getSanitizedBranch ${GEODE_BRANCH})
 SANITIZED_GEODE_FORK=$(getSanitizedFork ${GEODE_FORK})
 
+echo "Sanitized Geode Fork = ${SANITIZED_GEODE_FORK}"
+echo "Sanitized Goede Branch = ${SANITIZED_GEODE_BRANCH}"
+
 BIN_DIR=${OUTPUT_DIRECTORY}/bin
 TMP_DIR=${OUTPUT_DIRECTORY}/tmp
 mkdir -p ${BIN_DIR} ${TMP_DIR}
@@ -63,8 +66,6 @@ fi
 PIPELINE_NAME="${PIPELINE_PREFIX}images"
 
 #echo "DEBUG INFO *****************************"
-#echo "Sanitized Geode Fork = ${SANITIZED_GEODE_FORK}"
-#echo "Sanitized Goede Branch = ${SANITIZED_GEODE_BRANCH}"
 #echo "Pipeline prefix = ${PIPELINE_PREFIX}"
 #echo "Docker image prefix = ${DOCKER_IMAGE_PREFIX}"
 
