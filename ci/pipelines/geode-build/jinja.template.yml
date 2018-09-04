@@ -48,7 +48,9 @@ groups:
   - {{test.name}}Test
   {% endfor -%}
   - UpdatePassingRef
+{% if repository.sanitized_fork == "apache" %}
   - PublishArtifacts
+{% endif %}
 
 resources:
 - name: send-notification-email
