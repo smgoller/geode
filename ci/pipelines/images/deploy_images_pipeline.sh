@@ -62,6 +62,12 @@ fi
 
 PIPELINE_NAME="${PIPELINE_PREFIX}images"
 
+echo "DEBUG INFO *****************************"
+echo "Sanitized Geode Fork = ${SANITIZED_GEODE_FORK}"
+echo "Sanitized Goede Branch = ${SANITIZED_GEODE_BRANCH}"
+echo "Pipeline prefix = ${PIPELINE_PREFIX}"
+echo "Docker image prefix = ${DOCKER_IMAGE_PREFIX}"
+
 fly login -t ${TARGET} -c https://concourse.apachegeode-ci.info -u ${CONCOURSE_USERNAME} -p ${CONCOURSE_PASSWORD}
 set -x
 fly -t ${TARGET} set-pipeline \
