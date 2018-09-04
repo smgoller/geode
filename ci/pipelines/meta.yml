@@ -122,7 +122,6 @@ jobs:
         GEODE_FORK: ((!geode-fork))
         CONCOURSE_USERNAME: ((!concourse-username))
         CONCOURSE_PASSWORD: ((!concourse-password))
-        CONCOURSE_TEAM: ((!concourse-team))
       run:
         path: geode-pipeline/ci/pipelines/geode-build/deploy_pipeline.sh
 
@@ -152,7 +151,6 @@ jobs:
         GEODE_FORK: ((!geode-fork))
         CONCOURSE_USERNAME: ((!concourse-username))
         CONCOURSE_PASSWORD: ((!concourse-password))
-        CONCOURSE_TEAM: ((!concourse-team))
       run:
         path: geode-examples-pipeline/ci/pipelines/examples/deploy_pipeline.sh
 
@@ -182,7 +180,6 @@ jobs:
         GEODE_FORK: ((!geode-fork))
         CONCOURSE_USERNAME: ((!concourse-username))
         CONCOURSE_PASSWORD: ((!concourse-password))
-        CONCOURSE_TEAM: ((!concourse-team))
       run:
         path: geode-pr-pipeline/ci/pipelines/pull-request/deploy_pr_pipeline.sh
 
@@ -212,7 +209,6 @@ jobs:
         GEODE_FORK: ((!geode-fork))
         CONCOURSE_USERNAME: ((!concourse-username))
         CONCOURSE_PASSWORD: ((!concourse-password))
-        CONCOURSE_TEAM: ((!concourse-team))
         PUBLIC_PIPELINES: ((!public-pipelines))
       run:
         path: geode-images-pipeline/ci/pipelines/images/deploy_images_pipeline.sh

@@ -24,10 +24,13 @@ GEODE_BRANCH=${2:-${CURRENT_BRANCH}}
 SANITIZED_GEODE_BRANCH=$(getSanitizedBranch ${GEODE_BRANCH})
 SANITIZED_GEODE_FORK=$(getSanitizedFork ${GEODE_FORK})
 
-TEAM=$(fly targets | grep ^${TARGET} | awk '{print $3}')
-
 if [[ -z "${GEODE_FORK}" ]]; then
   echo "No fork provided!"
+  exit 1
+fi
+
+if [[ "${GEODE_FORK}" == "apache" ]]; then
+  echo "This utility is not for primary pipelines."
   exit 1
 fi
 

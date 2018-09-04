@@ -31,20 +31,15 @@ GEODE_FORK=${1:-apache}
 SANITIZED_GEODE_BRANCH=$(getSanitizedBranch ${GEODE_BRANCH})
 SANITIZED_GEODE_FORK=$(getSanitizedFork ${GEODE_FORK})
 
-TEAM=$(fly targets | grep ^${TARGET} | awk '{print $3}')
-
 PUBLIC=true
 
-echo "Deploying pipline for ${GEODE_FORK}/${GEODE_BRANCH} on team ${TEAM}"
-
-if [ "${TEAM}" = "staging" ]; then
-  PUBLIC=false
-fi
+echo "Deploying pipline for ${GEODE_FORK}/${GEODE_BRANCH}"
 
 if [[ "${GEODE_FORK}" == "apache" ]]; then
   META_PIPELINE="meta-${SANITIZED_GEODE_BRANCH}"
   PIPELINE_PREFIX=""
 else
+  PUBLIC=false
   META_PIPELINE="meta-${GEODE_FORK}-${SANITIZED_GEODE_BRANCH}"
   PIPELINE_PREFIX="${GEODE_FORK}-${SANITIZED_GEODE_BRANCH}-"
 fi
@@ -57,7 +52,6 @@ fly -t ${TARGET} set-pipeline \
   --var sanitized-geode-fork=${SANITIZED_GEODE_FORK} \
   --var geode-fork=${GEODE_FORK} \
   --var pipeline-prefix=${PIPELINE_PREFIX} \
-  --var concourse-team=${TEAM} \
   --yaml-var public-pipelines=${PUBLIC} 2>&1 |tee flyOutput.log
 
 set +x
