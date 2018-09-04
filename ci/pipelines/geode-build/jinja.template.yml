@@ -247,7 +247,7 @@ jobs:
       - name: geode-ci
       outputs:
       - name: results
-
+{% if repository.sanitized_fork == "apache" %}
 - name: PublishArtifacts
   public: true
   plan:
@@ -281,6 +281,7 @@ jobs:
       - name: geode
       - name: geode-ci
       - name: geode-build-version
+{% endif %}
 
 {% for test in tests if not test.name=="StressNew" %}
 - name: {{test.name}}Test
