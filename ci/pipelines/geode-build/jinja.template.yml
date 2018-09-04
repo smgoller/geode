@@ -67,6 +67,7 @@ resources:
 - name: concourse-metadata-resource
   type: concourse-metadata-resource
   source: {}
+{% if repository.sanitized_fork == "apache" %}
 - name: docker-geode-build-image
   type: docker-image
   source:
@@ -74,6 +75,7 @@ resources:
     repository: gcr.io/apachegeode-ci/{{ pipeline_prefix() }}((!docker-image-name))
     tag: latest
     username: ((!docker-username))
+{% endif %}
 - name: geode
   type: git
   source:
