@@ -237,7 +237,7 @@ jobs:
       platform: linux
       params:
         SANITIZED_GEODE_FORK: {{repository.sanitized_fork}}
-        SANITIZED_GEODE_BRANCH: {{repostiory.sanitized_branch}}
+        SANITIZED_GEODE_BRANCH: {{repository.sanitized_branch}}
         PUBLIC_BUCKET: ((!public-bucket))
         SERVICE_ACCOUNT: ((!concourse-gcp-account))
       run:
