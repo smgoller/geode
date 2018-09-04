@@ -47,8 +47,8 @@ groups:
   {% for test in (tests + windowstests) if not test.name=="StressNew" -%}
   - {{test.name}}Test
   {% endfor -%}
-  - UpdatePassingRef
 {% if repository.sanitized_fork == "apache" %}
+  - UpdatePassingRef
   - PublishArtifacts
 {% endif %}
 
@@ -221,6 +221,7 @@ jobs:
               - name: instance-data
             timeout: 1h
 
+{% if repository.sanitized_fork == "apache" %}
 - name: UpdatePassingRef
   public: true
   serial: true
@@ -238,8 +239,7 @@ jobs:
     config:
       platform: linux
       params:
-        SANITIZED_GEODE_FORK: {{repository.sanitized_fork}}
-        SANITIZED_GEODE_BRANCH: {{repository.sanitized_branch}}
+        MAINTENANCE_VERSION: {{repository.branch}}
         PUBLIC_BUCKET: ((!public-bucket))
         SERVICE_ACCOUNT: ((!concourse-gcp-account))
       run:
@@ -249,7 +249,6 @@ jobs:
       - name: geode-ci
       outputs:
       - name: results
-{% if repository.sanitized_fork == "apache" %}
 - name: PublishArtifacts
   public: true
   plan:
