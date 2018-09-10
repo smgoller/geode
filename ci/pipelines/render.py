@@ -43,10 +43,21 @@ def main(template_dir_name):
     with open(variables_file, 'r') as variablesFromYml:
         variables = yaml.load(variablesFromYml)
 
-    geode_branch_ = os.environ['GEODE_BRANCH']
-    variables['repository']['branch'] = geode_branch_
+    # repository.fork refers to the github user under which the pipeline environment is deployed from
     geode_fork_ = os.environ['GEODE_FORK']
     variables['repository']['fork'] = geode_fork_
+    # repository.branch refers to the git branch that this pipeline environment is deployed from
+    geode_branch_ = os.environ['GEODE_BRANCH']
+    variables['repository']['branch'] = geode_branch_
+    # concourse.host refers to the hostname of the concourse deployment
+    concourse_host_ = os.environ['CONCOURSE_HOST']
+    variables['concourse']['host'] = concourse_host_
+    # concourse.scheme refers to the URI scheme (http or https) of the concourse deployment
+    concourse_scheme_ = os.environ['CONCOURSE_SCHEME']
+    variables['concourse']['scheme'] = concourse_scheme_
+    # concourse.url refers to the complete external url of the concourse deployment
+    concourse_url_ = os.environ['CONCOURSE_URL']
+    variables['concourse']['url'] = concourse_url_
 
     # Use the one-true-way to truncate fork and branches, trimming the Python bytestream characters from the front and
     # back. If this is too ugly, then convert the BASH functions into python files, and call that Python from the

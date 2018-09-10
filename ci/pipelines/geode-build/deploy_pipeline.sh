@@ -52,7 +52,7 @@ SANITIZED_GEODE_FORK=$(getSanitizedFork ${GEODE_FORK})
 BIN_DIR=${OUTPUT_DIRECTORY}/bin
 TMP_DIR=${OUTPUT_DIRECTORY}/tmp
 mkdir -p ${BIN_DIR} ${TMP_DIR}
-curl -o ${BIN_DIR}/fly "https://concourse.apachegeode-ci.info/api/v1/cli?arch=amd64&platform=linux"
+curl -o ${BIN_DIR}/fly "${CONCOURSE_URL}/api/v1/cli?arch=amd64&platform=linux"
 chmod +x ${BIN_DIR}/fly
 
 PATH=${PATH}:${BIN_DIR}
@@ -74,7 +74,7 @@ pushd ${SCRIPTDIR} 2>&1 > /dev/null
   grep -n . generated-pipeline.yml
 
   fly login -t ${TARGET} \
-            -c https://concourse.apachegeode-ci.info \
+            -c ${CONCOURSE_URL} \
             -u ${CONCOURSE_USERNAME} \
             -p ${CONCOURSE_PASSWORD}
 

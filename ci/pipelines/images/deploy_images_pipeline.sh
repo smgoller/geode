@@ -48,7 +48,7 @@ echo "Sanitized Goede Branch = ${SANITIZED_GEODE_BRANCH}"
 BIN_DIR=${OUTPUT_DIRECTORY}/bin
 TMP_DIR=${OUTPUT_DIRECTORY}/tmp
 mkdir -p ${BIN_DIR} ${TMP_DIR}
-curl -o ${BIN_DIR}/fly "https://concourse.apachegeode-ci.info/api/v1/cli?arch=amd64&platform=linux"
+curl -o ${BIN_DIR}/fly "${CONCOURSE_URL}/api/v1/cli?arch=amd64&platform=linux"
 chmod +x ${BIN_DIR}/fly
 
 PATH=${PATH}:${BIN_DIR}
@@ -69,7 +69,7 @@ PIPELINE_NAME="${PIPELINE_PREFIX}images"
 #echo "Pipeline prefix = ${PIPELINE_PREFIX}"
 #echo "Docker image prefix = ${DOCKER_IMAGE_PREFIX}"
 
-fly login -t ${TARGET} -c https://concourse.apachegeode-ci.info -u ${CONCOURSE_USERNAME} -p ${CONCOURSE_PASSWORD}
+fly login -t ${TARGET} -c ${CONCOURSE_URL} -u ${CONCOURSE_USERNAME} -p ${CONCOURSE_PASSWORD}
 set -x
 fly -t ${TARGET} set-pipeline \
   --non-interactive \

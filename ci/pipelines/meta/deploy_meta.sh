@@ -33,14 +33,25 @@ for cmd in Jinja2 PyYAML; do
 done
 
 export GEODE_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-TARGET=geode
 export GEODE_FORK=${1:-apache}
 
 . ${SCRIPTDIR}/../shared/utilities.sh
 SANITIZED_GEODE_BRANCH=$(getSanitizedBranch ${GEODE_BRANCH})
 SANITIZED_GEODE_FORK=$(getSanitizedFork ${GEODE_FORK})
+export CONCOURSE_HOST=${2:-concourse.apachegeode-ci.info}
+export CONCOURSE_SCHEME=${3:-https}
+export CONCOURES_URL="${CONCOURSE_SCHEME}://${CONCOURSE_HOST}"
+TARGET="$(fly targets | grep "^${CONCOURSE_HOST}" | awk '{ print $1}')"
 
 PUBLIC=true
+
+if [[ -z "${TARGET}" ]]; then
+ echo "Target ${CONCOURSE_HOST} does not exist. Attempting to create target."
+ fly -t ${CONCOURSE_HOST} login -c "${CONCOURSE_URL}"
+ retval=$?
+
+ TARGET=${CONCOURSE_HOST}
+fi
 
 echo "Deploying pipline for ${GEODE_FORK}/${GEODE_BRANCH}"
 
@@ -53,7 +64,6 @@ else
   PIPELINE_PREFIX="${GEODE_FORK}-${SANITIZED_GEODE_BRANCH}-"
 fi
 
-
 pushd ${SCRIPTDIR} 2>&1 > /dev/null
 # Template and output share a directory with this script, but variables are shared in the parent directory.
   python3 ../render.py $(basename ${SCRIPTDIR}) || exit 1
@@ -65,6 +75,9 @@ pushd ${SCRIPTDIR} 2>&1 > /dev/null
     --var sanitized-geode-build-branch=${SANITIZED_GEODE_BRANCH} \
     --var sanitized-geode-fork=${SANITIZED_GEODE_FORK} \
     --var geode-fork=${GEODE_FORK} \
+    --var concourse-host=${CONCOURSE_HOST} \
+    --var concourse-scheme=${CONCOURSE_SCHEME} \
+    --var concourse-url=${CONCOURSE_URL} \
     --var pipeline-prefix=${PIPELINE_PREFIX} \
     --yaml-var public-pipelines=${PUBLIC} 2>&1 |tee flyOutput.log
 

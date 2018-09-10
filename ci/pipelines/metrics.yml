@@ -57,7 +57,7 @@ jobs:
         path: /usr/bin/python3
         args:
         - geode-ci/ci/bin/concourse_job_performance.py
-        - https://concourse.apachegeode-ci.info
+        - ((!concourse-url))
         - develop
         - Build
         - 50
@@ -82,7 +82,7 @@ jobs:
         path: /usr/bin/python3
         args:
         - geode-ci/ci/bin/concourse_job_performance.py
-        - https://concourse.apachegeode-ci.info
+        - ((!concourse-url))
         - develop
         - AcceptanceTest
         - 50
@@ -106,7 +106,7 @@ jobs:
         path: /usr/bin/python3
         args:
         - geode-ci/ci/bin/concourse_job_performance.py
-        - https://concourse.apachegeode-ci.info
+        - ((!concourse-url))
         - develop
         - DistributedTest
         - 50
@@ -131,7 +131,7 @@ jobs:
         path: /usr/bin/python3
         args:
         - geode-ci/ci/bin/concourse_job_performance.py
-        - https://concourse.apachegeode-ci.info
+        - ((!concourse-url))
         - develop
         - IntegrationTest
         - 50
@@ -156,7 +156,7 @@ jobs:
         path: /usr/bin/python3
         args:
         - geode-ci/ci/bin/concourse_job_performance.py
-        - https://concourse.apachegeode-ci.info
+        - ((!concourse-url))
         - develop
         - UpgradeTest
         - 50

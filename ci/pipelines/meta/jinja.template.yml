@@ -27,7 +27,7 @@ resources:
 - name: apachegeode-concourse
   type: concourse-pipeline
   source:
-    target: https://concourse.apachegeode-ci.info
+    target: {{ concourse.url }}
     insecure: "true"
     teams:
     - name: ((!concourse-team))
@@ -122,6 +122,9 @@ jobs:
         OUTPUT_DIRECTORY: results
         GEODE_BRANCH: ((!geode-build-branch))
         GEODE_FORK: ((!geode-fork))
+        CONCOURSE_HOST: ((!concourse-host))
+        CONCOURES_SCHEME: ((!concourse-scheme))
+        CONCOURES_URL: ((!concourse-url))
         CONCOURSE_USERNAME: ((!concourse-username))
         CONCOURSE_PASSWORD: ((!concourse-password))
         PUBLIC_PIPELINES: ((!public-pipelines))
@@ -152,6 +155,9 @@ jobs:
         OUTPUT_DIRECTORY: results
         GEODE_BRANCH: ((!geode-build-branch))
         GEODE_FORK: ((!geode-fork))
+        CONCOURSE_HOST: ((!concourse-host))
+        CONCOURES_SCHEME: ((!concourse-scheme))
+        CONCOURES_URL: ((!concourse-url))
         CONCOURSE_USERNAME: ((!concourse-username))
         CONCOURSE_PASSWORD: ((!concourse-password))
       run:
@@ -182,6 +188,9 @@ jobs:
         OUTPUT_DIRECTORY: results
         GEODE_BRANCH: ((!geode-build-branch))
         GEODE_FORK: ((!geode-fork))
+        CONCOURSE_HOST: ((!concourse-host))
+        CONCOURES_SCHEME: ((!concourse-scheme))
+        CONCOURES_URL: ((!concourse-url))
         CONCOURSE_USERNAME: ((!concourse-username))
         CONCOURSE_PASSWORD: ((!concourse-password))
       run:
@@ -211,6 +220,9 @@ jobs:
         OUTPUT_DIRECTORY: results
         GEODE_BRANCH: ((!geode-build-branch))
         GEODE_FORK: ((!geode-fork))
+        CONCOURSE_HOST: ((!concourse-host))
+        CONCOURES_SCHEME: ((!concourse-scheme))
+        CONCOURES_URL: ((!concourse-url))
         CONCOURSE_USERNAME: ((!concourse-username))
         CONCOURSE_PASSWORD: ((!concourse-password))
       run:
@@ -273,4 +285,6 @@ jobs:
   - put: meta-mini-image
     params:
       build: meta-mini-dockerfile/ci/images/meta-mini
+      build_args:
+        concourseurl: ((!concourse-url))
       tag_as_latest: true
