@@ -38,6 +38,14 @@ if [ -z $(command -v gcloud) ]; then
   echo "Install gcloud"
   exit 1
 fi
+META_PROPERTIES=${SCRIPTDIR}/meta.properties
+LOCAL_META_PROPERTIES=${SCRIPTDIR}/meta.properties.local
+
+source ${META_PROPERTIES}
+
+if [[ -f ${LOCAL_META_PROPERTIES} ]]; then
+  source ${LOCAL_META_PROPERTIES}
+fi
 
 GCP_PROJECT=${GCP_PROJECT:-$(gcloud info --format="value(config.project)")}
 echo "GCP_PROJECT=${GCP_PROJECT}"
@@ -49,13 +57,6 @@ fi
 set -e
 set -x
 
-GEODE_FORK=${1:-"apache"}
-GEODE_REPO_NAME=${2:-"geode"}
-UPSTREAM_FORK=${3:-"apache"}
-CONCOURSE_HOST=${4:-"concourse.apachegeode-ci.info"}
-ARTIFACT_BUCKET=${5:-"files.apachegeode-ci.info"}
-PUBLIC=${6:-"true"}
-REPOSITORY_PUBLIC=${7:-"true"}
 if [[ "${CONCOURSE_HOST}" == "concourse.apachegeode-ci.info" ]]; then
   CONCOURSE_SCHEME=https
 fi
