@@ -200,7 +200,8 @@ jobs:
           PARALLEL_DUNIT: {{test.PARALLEL_DUNIT}}
           PARALLEL_GRADLE: {{test.PARALLEL_GRADLE}}
           ARTIFACT_BUCKET: ((artifact-bucket))
-          SERVICE_ACCOUNT: ((!concourse-gcp-account))
+          SERVICE_ACCOUNT: ((concourse-gcp-account))
+          GRADLE_GLOBAL_ARGS: ((gradle-global-args))
         run:
           {%- if test.name=="StressNew" %}
           path: geode/ci/scripts/repeat-new-tests.sh

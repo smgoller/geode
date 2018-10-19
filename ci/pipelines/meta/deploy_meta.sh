@@ -96,6 +96,7 @@ pushd ${SCRIPTDIR} 2>&1 > /dev/null
     --var geode-repo-name=${GEODE_REPO_NAME} \
     --var upstream-fork=${UPSTREAM_FORK} \
     --var pipeline-prefix=${PIPELINE_PREFIX} \
+    --var gradle-global-args="${GRADLE_GLOBAL_ARGS}" \
     --var concourse-team=main \
     --yaml-var public-pipelines=${PUBLIC} 2>&1 |tee flyOutput.log
 
