@@ -168,7 +168,7 @@ jobs:
               GCP_PROJECT: ((gcp-project))
               RAM: {{test.RAM}}
             run:
-              path: geode-ci/ci/scripts/start_instance.sh
+              path: geode-ci/ci/scripts/create_instance.sh
             inputs:
             - name: concourse-metadata-resource
             - name: geode
@@ -257,7 +257,7 @@ jobs:
         - task: stop_instance
           {{- alpine_tools_config()|indent(10) }}
             run:
-              path: geode-ci/ci/scripts/stop_instance.sh
+              path: geode-ci/ci/scripts/delete_instance.sh
             inputs:
             - name: geode
             - name: geode-ci
