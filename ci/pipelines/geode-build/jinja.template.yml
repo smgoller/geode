@@ -205,7 +205,7 @@ jobs:
         pre: build
     - do:
       - put: concourse-metadata-resource
-      - task: start_instance
+      - task: create_instance
         {{ alpine_tools_config()|indent(8) }}
           params:
             {{ common_instance_params(build_test) | indent(12) }}
@@ -230,7 +230,7 @@ jobs:
       - name: instance-data
     timeout: 5m
     on_failure:
-      - task: stop_instance
+      - task: delete_instance
         {{ alpine_tools_config()|indent(8) }}
           run:
             path: geode-ci/ci/scripts/delete_instance.sh
@@ -299,7 +299,7 @@ jobs:
               - name: geode-build-version
               - name: geode-results
             timeout: 1h
-          - task: stop_instance
+          - task: delete_instance
             {{ alpine_tools_config()|indent(12) }}
               run:
                 path: geode-ci/ci/scripts/delete_instance.sh
@@ -345,7 +345,7 @@ jobs:
         pre: build
     - do:
       - put: concourse-metadata-resource
-      - task: start_instance
+      - task: create_instance
         {{ alpine_tools_config()|indent(8) }}
           params:
             {{ common_instance_params(publish_artifacts) | indent(12) }}
@@ -385,7 +385,7 @@ jobs:
       - name: geode-build-version
     ensure:
       do:
-      - task: stop_instance
+      - task: delete_instance
         {{ alpine_tools_config()|indent(8) }}
           run:
             path: geode-ci/ci/scripts/delete_instance.sh
@@ -410,7 +410,7 @@ jobs:
     {{ plan_resource_gets() |indent(4) }}
       - do:
         - put: concourse-metadata-resource
-        - task: start_instance
+        - task: create_instance
           {{ alpine_tools_config()|indent(10) }}
             params:
               {{ common_instance_params(parameters) | indent(14) }}
@@ -485,7 +485,7 @@ jobs:
               - name: geode-build-version
               - name: geode-results
             timeout: 1h
-          - task: stop_instance
+          - task: delete_instance
             {{ alpine_tools_config()|indent(12) }}
               run:
                 path: geode-ci/ci/scripts/delete_instance.sh

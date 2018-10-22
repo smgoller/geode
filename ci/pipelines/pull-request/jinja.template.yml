@@ -158,7 +158,7 @@ jobs:
             status: pending
       - do:
         - put: concourse-metadata-resource
-        - task: start_instance
+        - task: create_instance
           {{- alpine_tools_config()|indent(10) }}
             params:
               CPUS: {{test.CPUS}}
@@ -254,7 +254,7 @@ jobs:
             - name: geode
             - name: geode-ci
             - name: geode-results
-        - task: stop_instance
+        - task: delete_instance
           {{- alpine_tools_config()|indent(10) }}
             run:
               path: geode-ci/ci/scripts/delete_instance.sh
