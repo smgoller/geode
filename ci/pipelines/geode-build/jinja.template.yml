@@ -230,6 +230,7 @@ jobs:
       - name: instance-data
     timeout: 5m
     on_failure:
+      do:
       - task: delete_instance
         {{ alpine_tools_config()|indent(8) }}
           run:
