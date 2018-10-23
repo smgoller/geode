@@ -97,6 +97,7 @@ pushd ${SCRIPTDIR} 2>&1 > /dev/null
     --var upstream-fork=${UPSTREAM_FORK} \
     --var pipeline-prefix=${PIPELINE_PREFIX} \
     --var gradle-global-args="${GRADLE_GLOBAL_ARGS}" \
+    --var maven-snapshot-bucket="${MAVEN_SNAPSHOT_BUCKET}" \
     --var concourse-team=main \
     --yaml-var public-pipelines=${PUBLIC} 2>&1 |tee flyOutput.log
 

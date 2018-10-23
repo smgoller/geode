@@ -72,6 +72,7 @@ gcp-project: ${GCP_PROJECT}
 version-bucket: ${VERSION_BUCKET}
 artifact-bucket: ${ARTIFACT_BUCKET}
 gradle-global-args: ${GRADLE_GLOBAL_ARGS}
+maven-snapshot-bucket: ${MAVEN_SNAPSHOT_BUCKET}
 YML
 
 

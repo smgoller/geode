@@ -377,6 +377,7 @@ jobs:
         ARTIFACT_BUCKET: ((artifact-bucket))
         SERVICE_ACCOUNT: ((!concourse-gcp-account))
         JAVA_BUILD_VERSION: {{ java_build_version.version }}
+        MAVEN_SNAPSHOT_BUCKET: ((maven-snapshot-bucket))
       run:
         path: geode-ci/ci/scripts/execute_publish.sh
       inputs:

@@ -108,7 +108,7 @@ subprojects {
           } else {
             // If testing from a non-GCE instance, then the shell needs service-account creds
             // following the instructions at https://cloud.google.com/docs/authentication/production
-            url = "gcs://maven.apachegeode-ci.info/snapshots"
+            url = "gcs://$project.mavenSnapshotBucket/snapshots"
           }
         }
         if (! url.toString().startsWith("gcs:")) {
