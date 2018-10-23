@@ -193,7 +193,7 @@ subprojects {
 
   configure([integrationTest, distributedTest, performanceTest, acceptanceTest, uiTest, upgradeTest]) {
     if (project.hasProperty('excludeTest')) {
-      exclude project.getProperty('excludeTest')
+      exclude project.getProperty('excludeTest').split(',')
     }
   }
 
