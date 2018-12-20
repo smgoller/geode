@@ -357,19 +357,19 @@ jobs:
       do:
       - task: cleanup_benchmarks
         {{- alpine_tools_config()|indent(8) }}
-            params:
-              AWS_ACCESS_KEY_ID: ((benchmarks-access-key-id))
-              AWS_SECRET_ACCESS_KEY: ((benchmarks-secret-access-key))
-              AWS_DEFAULT_REGION: us-west-2
-              AWS_REGION: us-west-2
-            run:
-              path: geode-ci/ci/scripts/cleanup_benchmarks.sh
-            inputs:
-            - name: geode
-            - name: geode-ci
-            - name: geode-benchmarks
-            - name: concourse-metadata-resource
-            - name: results
+          params:
+            AWS_ACCESS_KEY_ID: ((benchmarks-access-key-id))
+            AWS_SECRET_ACCESS_KEY: ((benchmarks-secret-access-key))
+            AWS_DEFAULT_REGION: us-west-2
+            AWS_REGION: us-west-2
+          run:
+            path: geode-ci/ci/scripts/cleanup_benchmarks.sh
+          inputs:
+          - name: geode
+          - name: geode-ci
+          - name: geode-benchmarks
+          - name: concourse-metadata-resource
+          - name: results
 {% if repository.upstream_fork != "apache" or repository.branch == "develop" %}
 - name: PublishArtifacts
   public: true
