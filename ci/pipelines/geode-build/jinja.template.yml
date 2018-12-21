@@ -343,6 +343,9 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ((benchmarks-secret-access-key))
         AWS_DEFAULT_REGION: us-west-2
         AWS_REGION: us-west-2
+        MAINTENANCE_VERSION: ((geode-build-branch))
+        ARTIFACT_BUCKET: ((artifact-bucket))
+        SERVICE_ACCOUNT: ((!concourse-gcp-account))
       run:
         path: geode-ci/ci/scripts/run_benchmarks.sh
       inputs:

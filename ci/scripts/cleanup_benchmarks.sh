@@ -31,9 +31,39 @@ SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 RESULTS_DIR=$(pwd)/results
 
+pushd geode
+GEODE_SHA=$(git rev-parse --verify HEAD)
+popd
+
 source concourse-metadata-resource/concourse_metadata
-CLUSTER_TAG=foobar
+CLUSTER_TAG="${BUILD_PIPELINE_NAME}-${BUILD_JOB_NAME}-${BUILD_NAME}-${BUILD_ID}"
+RESULTS_BASE_DIR=$(pwd)/results
+BENCHMARKS_DIR=benchmarks-${CLUSTER_TAG}
+RESULTS_DIR=${RESULTS_BASE_DIR}/benchmarks-${CLUSTER_TAG}
+BENCHMARKS_ARCHIVE_FILE=${RESULTS_BASE_DIR}/${BENCHMARKS_DIR}.tgz
+BENCHMARKS_ARTIFACTS_DESTINATION="${ARTIFACT_BUCKET}/benchmarks/${BUILD_PIPELINE_NAME}/${GEODE_SHA}"
+
+if [[ "${ARTIFACT_BUCKET}" =~ \. ]]; then
+  ARTIFACT_SCHEME="http"
+else
+  ARTIFACT_SCHEME="gs"
+fi
 
 pushd geode-benchmarks/infrastructure/scripts/aws/
 ./destroy_cluster.sh ${CLUSTER_TAG}
+popd
+
+pushd ${RESULTS_BASE_DIR}
+  if [[ -d ${BENCHMARKS_DIR} ]]; then
+    tar zcvf ${BENCHMARKS_ARCHIVE_FILE} ${BENCHMARKS_DIR}
+    gsutil -q cp ${BENCHMARKS_ARCHIVE_FILE} ${BENCHMARKS_ARTIFACTS_DESTINATION}/
+    printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=-=  Test Results URI =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\033[0m\n"
+    printf "\033[92m${ARTIFACT_SCHEME}://${BENCHMARKS_ARTIFACTS_DESTINATION_DESTINATION}\033[0m\n"
+    printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\033[0m\n"
+    printf "\n"
+  else
+    echo "***************************"
+    echo "No benchmark results found!"
+    echo "***************************"
+  fi
 popd
