@@ -18,7 +18,7 @@
 # limitations under the License.
 
 set -e
-
+set -x
 BASE_DIR=$(pwd)
 
 SOURCE="${BASH_SOURCE[0]}"
@@ -56,7 +56,7 @@ popd
 pushd ${RESULTS_BASE_DIR}
   if [[ -d ${BENCHMARKS_DIR} ]]; then
     tar zcvf ${BENCHMARKS_ARCHIVE_FILE} ${BENCHMARKS_DIR}
-    gsutil -q cp ${BENCHMARKS_ARCHIVE_FILE} ${BENCHMARKS_ARTIFACTS_DESTINATION}/
+    gsutil -q cp ${BENCHMARKS_ARCHIVE_FILE} ${BENCHMARKS_ARTIFACTS_DESTINATION}/${BENCHMARKS_ARCHIVE_FILE}
     printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=-=  Test Results URI =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\033[0m\n"
     printf "\033[92m${ARTIFACT_SCHEME}://${BENCHMARKS_ARTIFACTS_DESTINATION_DESTINATION}\033[0m\n"
     printf "\033[92m=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\033[0m\n"
