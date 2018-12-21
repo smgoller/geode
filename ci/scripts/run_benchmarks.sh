@@ -43,7 +43,7 @@ popd
 
 pushd geode-benchmarks/infrastructure/scripts/aws/
 ./launch_cluster.sh ${CLUSTER_TAG} ${CLUSTER_COUNT}
-./run_against_baseline.sh ${CLUSTER_TAG} ${GEODE_SHA} ${BENCHMARKS_BRANCH} ${RESULTS_DIR}
+./run_against_baseline.sh ${CLUSTER_TAG} ${GEODE_SHA} ${BASELINE_BRANCH} ${BENCHMARKS_BRANCH} ${RESULTS_DIR}
 
 #./run_tests.sh ${CLUSTER_TAG} ${GEODE_SHA} ${BENCHMARKS_BRANCH} ${RESULTS_DIR}
 popd

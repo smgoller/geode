@@ -365,6 +365,7 @@ jobs:
             AWS_SECRET_ACCESS_KEY: ((benchmarks-secret-access-key))
             AWS_DEFAULT_REGION: us-west-2
             AWS_REGION: us-west-2
+            BASELINE_BRANCH: {{benchmarks.baseline_branch}}
           run:
             path: geode-ci/ci/scripts/cleanup_benchmarks.sh
           inputs:
