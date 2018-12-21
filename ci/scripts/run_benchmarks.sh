@@ -18,6 +18,7 @@
 # limitations under the License.
 
 set -e
+set -x
 
 BASE_DIR=$(pwd)
 
@@ -29,6 +30,7 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
+echo "Sourcing metadata"
 
 source concourse-metadata-resource/concourse_metadata
 CLUSTER_TAG="${BUILD_PIPELINE_NAME}-${BUILD_JOB_NAME}-${BUILD_NAME}-${BUILD_ID}"
