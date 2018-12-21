@@ -34,12 +34,14 @@ RESULTS_DIR=$(pwd)/results
 source concourse-metadata-resource/concourse_metadata
 CLUSTER_TAG=foobar
 CLUSTER_COUNT=4
+BENCHMARKS_BRANCH=aws
+
 pushd geode
 GEODE_SHA=$(git rev-parse --verify HEAD)
 popd
 
 pushd geode-benchmarks/infrastructure/scripts/aws/
 ./launch_cluster.sh ${CLUSTER_TAG} ${CLUSTER_COUNT}
-./run_tests.sh ${CLUSTER_TAG} ${GEODE_SHA} ${RESULTS_DIR}
+./run_tests.sh ${CLUSTER_TAG} ${GEODE_SHA} ${BENCHMARKS_BRANCH} ${RESULTS_DIR}
 popd
 echo "HI THERE"
