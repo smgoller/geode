@@ -29,10 +29,11 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 SCRIPTDIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-RESULTS_DIR=$(pwd)/results
 
 source concourse-metadata-resource/concourse_metadata
-CLUSTER_TAG=foobar
+CLUSTER_TAG="${BUILD_PIPELINE_NAME}-${BUILD_JOB_NAME}-${BUILD_NAME}-${BUILD_ID}"
+RESULTS_DIR=$(pwd)/results/benchmarks-${CLUSTER_TAG}
+
 CLUSTER_COUNT=4
 BENCHMARKS_BRANCH=aws
 
@@ -42,6 +43,8 @@ popd
 
 pushd geode-benchmarks/infrastructure/scripts/aws/
 ./launch_cluster.sh ${CLUSTER_TAG} ${CLUSTER_COUNT}
-./run_tests.sh ${CLUSTER_TAG} ${GEODE_SHA} ${BENCHMARKS_BRANCH} ${RESULTS_DIR}
+./run_against_baseline.sh ${CLUSTER_TAG} ${GEODE_SHA} ${BENCHMARKS_BRANCH} ${RESULTS_DIR}
+
+#./run_tests.sh ${CLUSTER_TAG} ${GEODE_SHA} ${BENCHMARKS_BRANCH} ${RESULTS_DIR}
 popd
 echo "HI THERE"
