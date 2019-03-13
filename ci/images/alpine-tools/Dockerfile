@@ -13,33 +13,46 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-FROM openjdk:8-jdk-alpine
+FROM openjdk:8-jdk-alpine as base
+
+FROM base as builder
+
+RUN mkdir /install
+RUN apk update && apk add postgresql-dev gcc git python3 py3-pip python3-dev musl-dev go make
+WORKDIR /install
+RUN pip3 install --install-option="--prefix=/install" psycopg2
+
+WORKDIR /tmp/work
+RUN git clone https://github.com/masterzen/winrm-cli \
+  && (cd winrm-cli; GOPATH=$PWD PATH=$PATH:$PWD/bin make) \
+  && cp winrm-cli/bin/winrm /usr/local/bin/ \
+  && rm -rf winrm-cli
+
+FROM base
 
 COPY --from=google/cloud-sdk:alpine /google-cloud-sdk /google-cloud-sdk
 COPY --from=hashicorp/packer:latest /bin/packer /usr/local/bin/packer
+COPY --from=builder /install /usr
+COPY --from=builder /usr/local/bin /usr/local/bin
+
 ENV PATH /google-cloud-sdk/bin:$PATH
 RUN apk --no-cache add \
       bash \
       curl \
       git \
-      go \
       jq \
-      make \
-      musl-dev \
+      libpq \
       openssh-client \
       openssl \
       python \
       py2-pip \
+      python3 \
+      py3-pip \
       rsync \
       util-linux \
   && gcloud config set core/disable_usage_reporting true \
   && gcloud config set component_manager/disable_update_check true \
   && gcloud config set metrics/environment github_docker_image \
-  && git clone https://github.com/masterzen/winrm-cli \
-  && (cd winrm-cli; GOPATH=$PWD PATH=$PATH:$PWD/bin make) \
-  && cp winrm-cli/bin/winrm /usr/local/bin/ \
-  && rm -rf winrm-cli \
   && gcloud components install -q beta \
   && printf "Host *\n  ServerAliveInterval 60 \n  ServerAliveCountMax 2\n" >> /etc/ssh/ssh_config \
-  && pip2 install awscli \
-  && apk --no-cache del go make
+  && pip2 install awscli
