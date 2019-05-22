@@ -67,10 +67,10 @@
         "write-output '>>>>>>>>>> Modify sshd config to comment use of administrators authorized key file <<<<<<<<<<'",
         "(Get-Content \"C:\\Program Files\\OpenSSH-Win64\\sshd_config_default\") -replace '(Match Group administrators)', '#$1' -replace '(\\s*AuthorizedKeysFile.*)', '#$1' | Out-File \"C:\\Program Files\\OpenSSH-Win64\\sshd_config_default\" -encoding UTF8",
         "write-output '>>>>>>>>>> Adding openjdk docker image <<<<<<<<<<'",
-        "docker pull openjdk:8u181-jdk-windowsservercore-1709",
+        "docker pull openjdk:8u181-jdk-windowsservercore-1809",
         "write-output '>>>>>>>>>> Removing unused docker images <<<<<<<<<<'",
-        "docker rmi microsoft/windowsservercore:1709",
-        "docker rmi microsoft/nanoserver:1709",
+        "docker rmi microsoft/windowsservercore:1809",
+        "docker rmi microsoft/nanoserver:1809",
 
         "Set-Content -Path c:\\ProgramData\\docker\\config\\daemon.json -Value '{ \"hosts\": [\"tcp://0.0.0.0:2375\", \"npipe://\"] }'",
 
