@@ -42,7 +42,7 @@
         "Set-ExecutionPolicy Bypass -Scope Process -Force",
 
         "Invoke-WebRequest https://chocolatey.org/install.ps1 -UseBasicParsing | Invoke-Expression",
-        "choco install -y git rsync adoptopenjdk11",
+        "choco install -y git rsync adoptopenjdk11 vcredist2010",
         "Move-Item \"C:\\Program Files\\AdoptOpenJDK\\jdk-11*\" c:\\java11",
         "choco install -y jdk8 -params 'installdir=c:\\\\java8tmp;source=false'",
         "Move-Item \"C:\\java8tmp\" c:\\java8",
