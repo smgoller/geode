@@ -52,6 +52,8 @@
     {
       "type": "powershell",
       "inline": [
+        "$ErrorActionPreference = \"Stop\"",
+        "Set-ExecutionPolicy Bypass -Scope Process -Force",
         "Invoke-WebRequest https://chocolatey.org/install.ps1 -UseBasicParsing | Invoke-Expression",
         "choco install -y git rsync adoptopenjdk11",
         "Move-Item \"C:\\Program Files\\AdoptOpenJDK\\jdk-11*\" c:\\java11",
