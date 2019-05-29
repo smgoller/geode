@@ -43,7 +43,8 @@
         "Install-WindowsFeature Containers",
         "Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force",
         "Install-Module DockerMsftProvider -Force",
-        "Install-Package Docker -ProviderName DockerMsftProvider -Force"
+        "Install-Package Docker -ProviderName DockerMsftProvider -Force",
+        "sc config docker start=auto"
         ]
     },
     {
