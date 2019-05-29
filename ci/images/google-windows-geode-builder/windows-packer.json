@@ -43,7 +43,15 @@
         "Install-WindowsFeature Containers",
         "Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force",
         "Install-Module DockerMsftProvider -Force",
-        "Install-Package Docker -ProviderName DockerMsftProvider -Force",
+        "Install-Package Docker -ProviderName DockerMsftProvider -Force"
+        ]
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "powershell",
+      "inline": [
         "Invoke-WebRequest https://chocolatey.org/install.ps1 -UseBasicParsing | Invoke-Expression",
         "choco install -y git rsync adoptopenjdk11",
         "Move-Item \"C:\\Program Files\\AdoptOpenJDK\\jdk-11*\" c:\\java11",
