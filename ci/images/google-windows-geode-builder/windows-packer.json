@@ -29,7 +29,7 @@
         "windows-startup-script-cmd": "winrm quickconfig -quiet & net user /add geode & net localgroup administrators geode /add & winrm set winrm/config/service/auth @{Basic=\"true\"}"
       },
       "zone": "us-central1-a",
-      "tags": ["packer"],
+      "tags": ["packer","internal"],
       "omit_external_ip": false,
       "use_internal_ip": "{{user `use_internal_ip`}}"
     }
