@@ -29,7 +29,7 @@ pushd ${SCRIPTDIR}
 
 if [[ -n "${CONCOURSE_GCP_KEY}" ]]; then
   dd of=credentials.json <<< "${CONCOURSE_GCP_KEY}"
-  export GOOGLE_APPLICATION_CREDENTIALS=${SCRIPTDIR}/credentials.json
+#  export GOOGLE_APPLICATION_CREDENTIALS=${SCRIPTDIR}/credentials.json
 fi
 
 GCP_NETWORK="default"
