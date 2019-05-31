@@ -57,5 +57,5 @@ PACKER_LOG=1 packer135 build \
   --var "gcp_project=${GCP_PROJECT}" \
   --var "gcp_network=${GCP_NETWORK}" \
   --var "gcp_subnetwork=${GCP_SUBNETWORK}" \
-  --var "use_internal_ip=false" \
+  --var "use_internal_ip=true" \
   windows-packer.json

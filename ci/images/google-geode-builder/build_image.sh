@@ -57,5 +57,5 @@ PACKER_LOG=1 packer build \
   --var "java_build_version=${JAVA_BUILD_VERSION}" \
   --var "gcp_network=${GCP_NETWORK}" \
   --var "gcp_subnetwork=${GCP_SUBNETWORK}" \
-  --var "use_internal_ip=false" \
+  --var "use_internal_ip=true" \
   packer.json
