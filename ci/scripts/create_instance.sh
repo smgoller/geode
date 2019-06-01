@@ -109,7 +109,7 @@ INSTANCE_INFORMATION=$(gcloud compute --project=${GCP_PROJECT} instances create 
   --boot-disk-size=100GB \
   --boot-disk-type=pd-ssd \
   --labels="${LABELS}" \
-  --tags="heavy-lifter, internal" \
+  --tags="heavy-lifter,internal" \
   --scopes="default,storage-rw" \
   --format=json)
 
