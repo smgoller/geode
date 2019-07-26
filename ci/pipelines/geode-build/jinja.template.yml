@@ -91,12 +91,6 @@ GRADLE_GLOBAL_ARGS: ((gradle-global-args))
   {%- endfor -%}
 {% endmacro %}
 
-{% macro all_gating_jobs_for_benchmark() %}
-{%- for test in (tests) if not test.name=="StressNew" and test.PLATFORM=="linux"%}
-- {{test.name}}TestOpenJDK8
-{%- endfor -%}
-{% endmacro %}
-
 groups:
 - name: main
   jobs:
@@ -406,12 +400,12 @@ jobs:
   - aggregate:
     - get: geode
       passed:
-      {{ all_gating_jobs_for_benchmark() | indent(6) }}
+      {{ all_gating_jobs() | indent(6) }}
       trigger: true
     - get: geode-benchmarks
     - get: geode-build-version
       passed:
-      {{ all_gating_jobs_for_benchmark() | indent(6) }}
+      {{ all_gating_jobs() | indent(6) }}
     - put: concourse-metadata-resource
   - task: run_benchmarks
     {{- alpine_tools_config()|indent(4) }}
@@ -462,11 +456,11 @@ jobs:
   - aggregate:
     - get: geode
       passed:
-      {{ all_gating_jobs() | indent(6) }}
+      - Benchmark
       trigger: true
     - get: geode-build-version
       passed:
-      {{ all_gating_jobs() | indent(6) }}
+      - Benchmark
     - do:
       - put: concourse-metadata-resource
       {{ init_retry()|indent(6) }}
