@@ -19,7 +19,21 @@
 
 ---
 
+resource_types:
+  - name: gci-resource
+    type: docker-image
+    source:
+      repository: smgoller/gci-resource
+
 resources:
+- name: builder-base-image
+  type: gci-resource
+  source:
+    family: ubuntu-minimal-1804-lts
+    family-project: ubuntu-os-cloud
+    project: ((gcp-project))
+    key: ((concourse-gcp-key))
+
 - name: build-concourse-dockerfile
   type: git
   source:
@@ -159,6 +173,8 @@ jobs:
   serial: true
   plan:
   - aggregate:
+    - get: builder-base-image
+      trigger: true
     - get: test-container-docker-image
       passed: [build-test-container-docker-image]
       trigger: true
