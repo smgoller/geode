@@ -105,13 +105,14 @@ INSTANCE_INFORMATION=$(gcloud compute --project=${GCP_PROJECT} instances create 
   --min-cpu-platform=Intel\ Skylake \
   --network="${GCP_NETWORK}" \
   --subnet="${GCP_SUBNETWORK}" \
-  --image-family="${IMAGE_FAMILY_PREFIX}${WINDOWS_PREFIX}geode-builder" \
+  --image="ife63f066-4e68-57c0-8ce6-855cdaa4b84f-gb-1571446510" \
   --boot-disk-size=100GB \
   --boot-disk-type=pd-ssd \
   --labels="${LABELS}" \
   --tags="heavy-lifter" \
   --scopes="default,storage-rw" \
   --format=json)
+#  --image-family="${IMAGE_FAMILY_PREFIX}${WINDOWS_PREFIX}geode-builder" \
 
 echo "${INSTANCE_INFORMATION}" > instance-data/instance-information
 
