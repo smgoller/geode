@@ -89,8 +89,8 @@ resources:
   type: time
   source:
     interval: 168h
-    days: [Friday]
-    start: 5PM
+    days: [Monday]
+    start: 9AM
     stop: 11PM
     location: America/Los_Angeles
 - name: test-finish-time
