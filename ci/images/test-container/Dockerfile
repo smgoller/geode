@@ -16,12 +16,12 @@
 
 FROM ubuntu:focal
 ENTRYPOINT []
-
+ENV DEBIAN_FRONTEND=noninteractive
 ARG CHROME_DRIVER_VERSION=2.35
 
 WORKDIR /tmp/work
-RUN  apt-get update \
-  && apt-get install -y --no-install-recommends \
+RUN   apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
      apt-transport-https \
      ca-certificates \
      bzip2 \
@@ -40,7 +40,7 @@ RUN  apt-get update \
   && curl -sSL https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
   && curl -fsSL https://download.bell-sw.com/pki/GPG-KEY-bellsoft | apt-key add - \
   && apt-get update \
-  && apt-get install -y --no-install-recommends \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     aptitude \
     google-chrome-stable \
   && wget --no-verbose -O /tmp/chromedriver_linux64.zip https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip \
@@ -52,7 +52,7 @@ RUN  apt-get update \
   && ln -fs /opt/selenium/chromedriver-$CHROME_DRIVER_VERSION /usr/bin/chromedriver \
   && useradd --shell /bin/bash -u 93043 -o -c "" -m geode \
   && cp -R /etc/alternatives /etc/keep-alternatives \
-  && apt-get install -y --no-install-recommends \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     openjdk-8-jdk \
     openjdk-11-jdk \
     java-common \
