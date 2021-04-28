@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ubuntu:bionic
+FROM ubuntu:focal
 ENTRYPOINT []
 
 ARG CHROME_DRIVER_VERSION=2.35
